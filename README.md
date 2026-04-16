@@ -1,5 +1,5 @@
 **Alpha Brain**
-Map and store everything that comes to your mind your creative ideas, inspirations, resources essentially keep track of everything that goes in and out of your mind.
+Maps and store everything that comes to your mind your creative ideas, inspirations, resources essentially keep track of everything that goes in and out of your mind.
 
 **Future directions**
 - Since we know everything you do, we can study that ideas comes to your mind, what type actions do you take more, how are you wokring, what type of resources do you prefer more and what did you learn, work over last week or year
