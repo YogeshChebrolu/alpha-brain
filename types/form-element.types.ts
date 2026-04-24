@@ -11,7 +11,8 @@ export type FormElementType =
   | 'checkbox'
   | 'date'
   | 'due_date'
-  | 'actions';
+  | 'actions'
+  | 'link';
 
 export interface FormElementConfig {
   id: string;

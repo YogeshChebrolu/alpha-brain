@@ -12,6 +12,7 @@ import SelectElement from './SelectElement';
 import FileUploadElement from './FileUploadElement';
 import DueDateElement from './DueDateElement';
 import ActionsElement from './ActionsElement';
+import LinkElement from './LinkElement';
 import {
   Type,
   AlignLeft,
@@ -23,6 +24,7 @@ import {
   Calendar,
   Clock,
   ListChecks,
+  Link,
 } from 'lucide-react';
 
 /**
@@ -103,6 +105,17 @@ export const LIBRARY_METADATA: Record<FormElementType, ElementMetadata> = {
       label: 'Attachments',
     },
     component: FileUploadElement,
+  },
+  link: {
+    type: 'link',
+    name: 'Links',
+    description: 'Add article URLs, tweets, repos, etc.',
+    icon: Link,
+    defaultConfig: {
+      label: 'References',
+      placeholder: 'Add links to articles, blogs, tweets, repos...',
+    },
+    component: LinkElement,
   },
   checkbox: {
     type: 'checkbox',

@@ -97,6 +97,19 @@ export default function IdeaDetailPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!idea || !confirm('Delete this idea?')) return;
+    try {
+      await supabase.from('ideas').update({
+        archived: true,
+        archived_at: new Date().toISOString()
+      }).eq('id', idea.id);
+      router.push('/');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-6 h-6 animate-spin" /></div>;
   if (!idea || !template) return <div className="text-center p-12">Idea not found</div>;
 
@@ -110,11 +123,20 @@ export default function IdeaDetailPage() {
             <p className="text-sm text-neutral-500 mt-1">{idea.categories?.name}</p>
           </div>
         </div>
-        {!isEditing && (
-          <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-neutral-50">
-            <Edit className="w-4 h-4" />Edit
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {!isEditing && (
+            <>
+              <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+                <Edit className="w-4 h-4" />
+                Edit
+              </button>
+              <button onClick={handleDelete} className="flex items-center gap-2 px-4 py-2 border border-neutral-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors group">
+                <Trash2 className="w-4 h-4 text-neutral-600 group-hover:text-red-600" />
+                <span className="text-neutral-600 group-hover:text-red-600">Delete</span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <div className="bg-white border rounded-2xl p-8">
         <DynamicFormRenderer

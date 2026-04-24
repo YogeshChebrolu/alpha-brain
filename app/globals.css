@@ -121,3 +121,34 @@ body {
   background: #f4f4f5;
   font-weight: 700;
 }
+
+/* Custom Scrollbar - Minimal & Subtle */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+/* Even more subtle for light backgrounds */
+*::-webkit-scrollbar-thumb:active {
+  background: #737373;
+}

@@ -2,6 +2,7 @@
 
 import { FormElementProps } from '@/types/form-element.types';
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import { createClient } from '@/lib/supabase/client';
 import { Upload, X, FileIcon, FileText, Image, File } from 'lucide-react';
 
@@ -114,9 +115,15 @@ export default function FileUploadElement({
           mime_type: file.type,
         });
 
-        // Update progress
+        // Update progress immediately (force React to render)
         completedFiles++;
-        setUploadProgress(Math.round((completedFiles / totalFiles) * 100));
+        const newProgress = Math.round((completedFiles / totalFiles) * 100);
+        flushSync(() => {
+          setUploadProgress(newProgress);
+        });
+
+        // Small delay to make progress visible
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
 
       // Update value with new resource IDs
@@ -194,17 +201,20 @@ export default function FileUploadElement({
       );
     }
 
+    // Separate images and other files
+    const imageFiles = files.filter((f) => f.mime_type.startsWith('image/'));
+    const otherFiles = files.filter((f) => !f.mime_type.startsWith('image/'));
+
     return (
       <div className="space-y-3">
         <label className="text-sm font-medium text-neutral-700">
           {config.label}
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {files.map((file) => {
-            const Icon = getFileIcon(file.mime_type);
-            const isImage = file.mime_type.startsWith('image/');
 
-            return (
+        {/* Image Files - Grid Layout */}
+        {imageFiles.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {imageFiles.map((file) => (
               <a
                 key={file.id}
                 href={file.url}
@@ -212,21 +222,13 @@ export default function FileUploadElement({
                 rel="noopener noreferrer"
                 className="group border border-neutral-200 rounded-lg p-3 hover:border-neutral-900 hover:shadow-md transition-all bg-white"
               >
-                {isImage ? (
-                  <div className="aspect-video mb-2 rounded overflow-hidden bg-neutral-50">
-                    <img
-                      src={file.url}
-                      alt={file.file_name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-neutral-100 rounded-lg group-hover:bg-neutral-900 group-hover:text-white transition-colors">
-                      <Icon className="w-5 h-5" />
-                    </div>
-                  </div>
-                )}
+                <div className="aspect-video mb-2 rounded overflow-hidden bg-neutral-50">
+                  <img
+                    src={file.url}
+                    alt={file.file_name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <p className="text-sm font-medium text-neutral-900 truncate">
                   {file.file_name}
                 </p>
@@ -234,9 +236,39 @@ export default function FileUploadElement({
                   {formatFileSize(file.file_size)}
                 </p>
               </a>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {/* Other Files - Compact List */}
+        {otherFiles.length > 0 && (
+          <div className="space-y-2">
+            {otherFiles.map((file) => {
+              const Icon = getFileIcon(file.mime_type);
+              return (
+                <a
+                  key={file.id}
+                  href={file.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 p-3 border border-neutral-200 rounded-lg hover:border-neutral-900 hover:shadow-sm transition-all bg-white"
+                >
+                  <div className="p-2 bg-neutral-100 rounded-lg group-hover:bg-neutral-900 group-hover:text-white transition-colors">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-neutral-900 truncate">
+                      {file.file_name}
+                    </p>
+                    <p className="text-xs text-neutral-500">
+                      {formatFileSize(file.file_size)}
+                    </p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }

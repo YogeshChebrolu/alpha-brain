@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle2, Clock, Circle, ExternalLink } from 'lucide-react';
+import { ExternalLink, TrendingUp, Zap, Sparkles } from 'lucide-react';
 
 /**
  * Actions Page
@@ -24,26 +24,48 @@ export default async function ActionsPage() {
   const completedActions =
     actions?.filter((a) => a.status === 'completed') || [];
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+            Done
+          </span>
+        );
+      case 'in_progress':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+            In Progress
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-50 text-neutral-600 border border-neutral-200">
+            To Do
+          </span>
+        );
+    }
+  };
+
   const ActionItem = ({
     action,
   }: {
     action: (typeof actions)[0] & { ideas: { id: string; title: string } | null };
   }) => (
-    <div className="p-4 bg-white border border-border rounded-lg hover:border-accent transition-colors">
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5">
-          {action.status === 'completed' ? (
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
-          ) : action.status === 'in_progress' ? (
-            <Clock className="w-5 h-5 text-amber-500" />
-          ) : (
-            <Circle className="w-5 h-5 text-gray-300" />
-          )}
-        </div>
-        <div className="flex-1">
+    <div className="group p-4 bg-white border border-neutral-200 rounded-xl hover:shadow-md hover:border-neutral-300 transition-all">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2">
+            {getStatusBadge(action.status)}
+            {action.due_time && (
+              <span className="text-xs text-neutral-500">
+                Due {formatDistanceToNow(new Date(action.due_time), { addSuffix: true })}
+              </span>
+            )}
+          </div>
           <p
-            className={`text-text ${
-              action.status === 'completed' ? 'line-through text-gray-400' : ''
+            className={`text-neutral-900 font-medium ${
+              action.status === 'completed' ? 'line-through text-neutral-400' : ''
             }`}
           >
             {action.text}
@@ -51,19 +73,11 @@ export default async function ActionsPage() {
           {action.ideas && (
             <Link
               href={`/ideas/${action.ideas.id}`}
-              className="inline-flex items-center gap-1 text-sm text-accent hover:underline mt-2"
+              className="inline-flex items-center gap-1 text-sm text-neutral-600 hover:text-neutral-900 mt-2 group-hover:underline"
             >
-              {action.ideas.title}
+              <span>{action.ideas.title}</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
-          )}
-          {action.due_time && (
-            <p className="text-xs text-gray-500 mt-1">
-              Due{' '}
-              {formatDistanceToNow(new Date(action.due_time), {
-                addSuffix: true,
-              })}
-            </p>
           )}
         </div>
       </div>
@@ -82,10 +96,15 @@ export default async function ActionsPage() {
       <div className="space-y-8">
         {/* Pending Actions */}
         <div>
-          <h2 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
-            <Circle className="w-5 h-5 text-gray-400" />
-            Pending ({pendingActions.length})
-          </h2>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center justify-center w-10 h-10 bg-neutral-100 rounded-xl">
+              <Sparkles className="w-5 h-5 text-neutral-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-neutral-900">Pending</h2>
+              <p className="text-xs text-neutral-500">{pendingActions.length} action{pendingActions.length !== 1 ? 's' : ''} to start</p>
+            </div>
+          </div>
           {pendingActions.length > 0 ? (
             <div className="space-y-3">
               {pendingActions.map((action) => (
@@ -93,7 +112,7 @@ export default async function ActionsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm text-neutral-500 p-4 bg-neutral-50 rounded-xl border border-neutral-100">
               No pending actions
             </p>
           )}
@@ -101,10 +120,15 @@ export default async function ActionsPage() {
 
         {/* In Progress Actions */}
         <div>
-          <h2 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-amber-500" />
-            In Progress ({inProgressActions.length})
-          </h2>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center justify-center w-10 h-10 bg-blue-50 rounded-xl">
+              <Zap className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-neutral-900">In Progress</h2>
+              <p className="text-xs text-neutral-500">{inProgressActions.length} action{inProgressActions.length !== 1 ? 's' : ''} in flight</p>
+            </div>
+          </div>
           {inProgressActions.length > 0 ? (
             <div className="space-y-3">
               {inProgressActions.map((action) => (
@@ -112,7 +136,7 @@ export default async function ActionsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm text-neutral-500 p-4 bg-neutral-50 rounded-xl border border-neutral-100">
               No actions in progress
             </p>
           )}
@@ -120,10 +144,15 @@ export default async function ActionsPage() {
 
         {/* Completed Actions */}
         <div>
-          <h2 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
-            Completed ({completedActions.length})
-          </h2>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center justify-center w-10 h-10 bg-green-50 rounded-xl">
+              <TrendingUp className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-neutral-900">Completed</h2>
+              <p className="text-xs text-neutral-500">{completedActions.length} action{completedActions.length !== 1 ? 's' : ''} done</p>
+            </div>
+          </div>
           {completedActions.length > 0 ? (
             <div className="space-y-3">
               {completedActions.map((action) => (
@@ -131,7 +160,7 @@ export default async function ActionsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm text-neutral-500 p-4 bg-neutral-50 rounded-xl border border-neutral-100">
               No completed actions yet
             </p>
           )}

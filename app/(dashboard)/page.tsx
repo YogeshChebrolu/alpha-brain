@@ -16,15 +16,17 @@ export default async function HomePage() {
     .order('due_time', { ascending: true })
     .limit(5);
 
-  // Fetch recent ideas count
+  // Fetch recent ideas count (exclude archived)
   const { count: ideasCount } = await supabase
     .from('ideas')
-    .select('*', { count: 'exact', head: true });
+    .select('*', { count: 'exact', head: true })
+    .eq('archived', false);
 
-  // Fetch categories
+  // Fetch categories (exclude archived)
   const { data: categories } = await supabase
     .from('categories')
     .select('*')
+    .eq('archived', false)
     .limit(4);
 
   return (
