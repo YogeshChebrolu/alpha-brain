@@ -1,5 +1,4 @@
 import Header from '@/components/layout/Header';
-import BrainASCIIFooter from '@/components/layout/BrainASCIIFooter';
 
 export default function DashboardLayout({
   children,
@@ -7,12 +6,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 pb-32">
+      <main className="flex-1 container mx-auto px-4 py-8">
         {children}
       </main>
-      <BrainASCIIFooter />
     </div>
   );
 }

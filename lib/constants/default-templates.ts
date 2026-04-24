@@ -2,7 +2,8 @@ import { FormElementConfig } from '@/types/form-element.types';
 
 /**
  * Default Idea Template
- * Basic template for general ideas
+ * Core template with 5 essential fields:
+ * - Title, Explanation, Resources, Actions, Due Date
  */
 export const DEFAULT_IDEA_TEMPLATE: FormElementConfig[] = [
   {
@@ -22,6 +23,17 @@ export const DEFAULT_IDEA_TEMPLATE: FormElementConfig[] = [
     id: 'resources',
     type: 'file_upload',
     label: 'Resources',
+  },
+  {
+    id: 'actions',
+    type: 'actions',
+    label: 'Actions',
+    placeholder: 'What steps will you take?',
+  },
+  {
+    id: 'due',
+    type: 'due_date',
+    label: 'Due Date',
   },
 ];
 

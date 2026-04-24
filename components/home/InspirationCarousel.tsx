@@ -9,25 +9,25 @@ const INSPIRATION_CARDS = [
     title: 'AlphaFold Revolution',
     description: 'AI solving protein folding - unlocking the secrets of biology',
     icon: Dna,
-    gradient: 'from-purple-500/20 to-blue-500/20',
+    gradient: 'from-neutral-100 to-neutral-200',
   },
   {
     title: 'SpaceX Starship',
     description: 'Making life multiplanetary - the next frontier of humanity',
     icon: Rocket,
-    gradient: 'from-orange-500/20 to-red-500/20',
+    gradient: 'from-neutral-100 to-neutral-200',
   },
   {
     title: 'Neural Networks',
     description: 'Deep learning transforming every industry',
     icon: Brain,
-    gradient: 'from-green-500/20 to-teal-500/20',
+    gradient: 'from-neutral-100 to-neutral-200',
   },
   {
     title: 'Quantum Computing',
     description: 'Computing at the edge of physics - solving the unsolvable',
     icon: Cpu,
-    gradient: 'from-cyan-500/20 to-indigo-500/20',
+    gradient: 'from-neutral-100 to-neutral-200',
   },
 ];
 
@@ -74,7 +74,7 @@ export default function InspirationCarousel() {
               <div className="flex items-center gap-3 mb-4">
                 {(() => {
                   const Icon = INSPIRATION_CARDS[currentSlide].icon;
-                  return <Icon className="w-10 h-10 text-accent" />;
+                  return <Icon className="w-10 h-10 text-neutral-900" />;
                 })()}
                 <h2 className="text-2xl md:text-3xl font-bold text-text">
                   {INSPIRATION_CARDS[currentSlide].title}
@@ -110,7 +110,7 @@ export default function InspirationCarousel() {
             onClick={() => goToSlide(i)}
             className={`w-2 h-2 rounded-full transition-all ${
               i === currentSlide
-                ? 'bg-accent w-6'
+                ? 'bg-neutral-900 w-6'
                 : 'bg-gray-300 hover:bg-gray-400'
             }`}
           />

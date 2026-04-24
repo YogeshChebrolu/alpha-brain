@@ -6,9 +6,12 @@ export type FormElementType =
   | 'markdown'
   | 'select'
   | 'stock_ticker'
+  | 'stock_graph'
   | 'file_upload'
   | 'checkbox'
-  | 'date';
+  | 'date'
+  | 'due_date'
+  | 'actions';
 
 export interface FormElementConfig {
   id: string;

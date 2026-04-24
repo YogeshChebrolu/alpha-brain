@@ -23,13 +23,13 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-sm border-b border-neutral-200">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Brain className="w-6 h-6 text-accent" />
-            <span className="font-bold text-lg text-text">Alpha Brain</span>
+            <Brain className="w-6 h-6 text-neutral-900" />
+            <span className="font-bold text-lg text-neutral-900">Alpha Brain</span>
           </Link>
 
           {/* Navigation */}
@@ -43,8 +43,8 @@ export default function Header() {
                   href={item.href}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-accent text-white'
-                      : 'text-text hover:bg-border/50'
+                      ? 'bg-neutral-900 text-white'
+                      : 'text-neutral-700 hover:bg-neutral-100'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -57,7 +57,7 @@ export default function Header() {
 
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-text hover:bg-red-50 hover:text-red-600 transition-colors ml-2"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors ml-2"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline text-sm font-medium">

@@ -40,13 +40,13 @@ export default function LoginPage() {
     <div className="space-y-8">
       {/* Mobile Logo */}
       <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-        <Brain className="w-10 h-10 text-accent" />
-        <span className="text-2xl font-bold text-text">Alpha Brain</span>
+        <Brain className="w-10 h-10 text-neutral-900" />
+        <span className="text-2xl font-bold text-neutral-900">Alpha Brain</span>
       </div>
 
       <div>
-        <h2 className="text-3xl font-bold text-text">Welcome back</h2>
-        <p className="text-gray-500 mt-2">
+        <h2 className="text-3xl font-bold text-neutral-900">Welcome back</h2>
+        <p className="text-neutral-500 mt-2">
           Sign in to continue to your insight lab
         </p>
       </div>
@@ -59,35 +59,35 @@ export default function LoginPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-text mb-2">
+          <label className="block text-sm font-medium text-neutral-900 mb-2">
             Email
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-text bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900 bg-white"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-text mb-2">
+          <label className="block text-sm font-medium text-neutral-900 mb-2">
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-text bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900 bg-white"
             />
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-accent text-white py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+          className="w-full bg-neutral-900 text-white py-3 rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -108,9 +108,9 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <p className="text-center text-gray-500">
+      <p className="text-center text-neutral-500">
         Don&apos;t have an account?{' '}
-        <Link href="/signup" className="text-accent hover:underline font-medium">
+        <Link href="/signup" className="text-neutral-900 hover:underline font-medium">
           Sign up
         </Link>
       </p>

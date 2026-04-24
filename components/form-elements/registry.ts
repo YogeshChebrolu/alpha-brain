@@ -7,16 +7,22 @@ import {
 import TextElement from './TextElement';
 import MarkdownElement from './MarkdownElement';
 import StockTickerElement from './StockTickerElement';
+import StockGraphElement from './StockGraphElement';
 import SelectElement from './SelectElement';
 import FileUploadElement from './FileUploadElement';
+import DueDateElement from './DueDateElement';
+import ActionsElement from './ActionsElement';
 import {
   Type,
   AlignLeft,
   Tag,
   TrendingUp,
+  TrendingDown,
   Upload,
   CheckSquare,
   Calendar,
+  Clock,
+  ListChecks,
 } from 'lucide-react';
 
 /**
@@ -117,6 +123,38 @@ export const LIBRARY_METADATA: Record<FormElementType, ElementMetadata> = {
       label: 'Date',
     },
     component: TextElement, // TODO: implement DateElement
+  },
+  due_date: {
+    type: 'due_date',
+    name: 'Due Date',
+    description: 'Deadline with optional reminder',
+    icon: Clock,
+    defaultConfig: {
+      label: 'Due Date',
+    },
+    component: DueDateElement,
+  },
+  actions: {
+    type: 'actions',
+    name: 'Actions List',
+    description: 'Track action items and their status',
+    icon: ListChecks,
+    defaultConfig: {
+      label: 'Actions',
+      placeholder: 'Add actions to track progress...',
+    },
+    component: ActionsElement,
+  },
+  stock_graph: {
+    type: 'stock_graph',
+    name: 'Stock Graph',
+    description: 'Visual chart showing stock returns',
+    icon: TrendingDown,
+    defaultConfig: {
+      label: 'Stock Symbol',
+      placeholder: 'e.g., AAPL',
+    },
+    component: StockGraphElement,
   },
 };
 

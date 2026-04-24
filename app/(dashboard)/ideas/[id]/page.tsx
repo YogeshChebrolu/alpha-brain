@@ -1,173 +1,132 @@
-import { createClient } from '@/lib/supabase/server';
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowLeft, Edit, Archive, Trash2, Loader2, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
-import { ArrowLeft, Edit, Clock, Plus } from 'lucide-react';
-import { formatDistanceToNow, format } from 'date-fns';
 import DynamicFormRenderer from '@/components/ideas/DynamicFormRenderer';
 import { FormElementConfig } from '@/types/form-element.types';
+import { Tables } from '@/types/database.types';
+import { getIdeaActions, syncActionsToIdea } from '@/lib/helpers/actions';
+import { linkResourcesToIdea, moveTemporaryFiles } from '@/lib/helpers/resources';
 
-interface Props {
-  params: Promise<{ id: string }>;
-}
+type Idea = Tables<'ideas'> & {
+  categories?: Tables<'categories'> & {
+    templates?: Tables<'templates'> | null;
+  } | null;
+};
 
-/**
- * Idea Detail Page
- * Shows the full idea with all form fields in view mode
- */
-export default async function IdeaDetailPage({ params }: Props) {
-  const { id } = await params;
-  const supabase = await createClient();
+export default function IdeaDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const supabase = createClient();
+  const [idea, setIdea] = useState<Idea | null>(null);
+  const [template, setTemplate] = useState<FormElementConfig[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch idea with category and template
-  const { data: idea } = await supabase
-    .from('ideas')
-    .select('*, categories(*, templates(*))')
-    .eq('id', id)
-    .single();
+  useEffect(() => {
+    loadIdea();
+  }, [params.id]);
 
-  if (!idea) {
-    notFound();
-  }
+  const loadIdea = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('ideas')
+        .select('*, categories (*, templates (*))')
+        .eq('id', params.id as string)
+        .single();
+      if (error) throw error;
 
-  // Fetch actions for this idea
-  const { data: actions } = await supabase
-    .from('actions')
-    .select('*')
-    .eq('idea_id', id)
-    .order('created_at', { ascending: false });
+      // Fetch actions from the actions table
+      const actions = await getIdeaActions(params.id as string);
 
-  const template = idea.categories?.templates?.form_structure as
-    | FormElementConfig[]
-    | undefined;
-  const contentJson = idea.content_json as Record<string, any> | null;
+      // Merge actions into content_json for the form
+      const ideaWithActions = {
+        ...data,
+        content_json: {
+          ...(data.content_json as Record<string, any> || {}),
+          actions,
+        },
+      };
+
+      setIdea(ideaWithActions as Idea);
+      if (data.categories?.templates?.form_structure) {
+        setTemplate(data.categories.templates.form_structure as unknown as FormElementConfig[]);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (values: Record<string, any>) => {
+    if (!idea) return;
+    try {
+      // Extract actions and resources from form values
+      const actions = values.actions || [];
+      const resourceIds = values.resources || [];
+
+      // Update the idea
+      await supabase.from('ideas').update({
+        title: values.title || idea.title,
+        content_json: values
+      }).eq('id', idea.id);
+
+      // Sync actions to the actions table
+      await syncActionsToIdea(idea.id, actions);
+
+      // Handle resources if any were added
+      if (resourceIds.length > 0) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session) {
+          await linkResourcesToIdea(idea.id, resourceIds);
+          await moveTemporaryFiles(session.user.id, idea.id, resourceIds);
+        }
+      }
+
+      setIsEditing(false);
+      loadIdea();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-6 h-6 animate-spin" /></div>;
+  if (!idea || !template) return <div className="text-center p-12">Idea not found</div>;
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link
-            href="/ideas"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-text" />
-          </Link>
+          <Link href="/" className="p-2 hover:bg-neutral-100 rounded-lg"><ArrowLeft className="w-5 h-5" /></Link>
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">{idea.categories?.icon || '💡'}</span>
-              <span className="text-sm text-gray-500">
-                {idea.categories?.name || 'General'}
-              </span>
-            </div>
-            <h1 className="text-2xl font-bold text-text">{idea.title}</h1>
+            <h1 className="text-3xl font-bold">{idea.title}</h1>
+            <p className="text-sm text-neutral-500 mt-1">{idea.categories?.name}</p>
           </div>
         </div>
-
-        <Link
-          href={`/ideas/${id}/edit`}
-          className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:border-accent transition-colors"
-        >
-          <Edit className="w-4 h-4" />
-          Edit
-        </Link>
+        {!isEditing && (
+          <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-neutral-50">
+            <Edit className="w-4 h-4" />Edit
+          </button>
+        )}
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Idea Details Card */}
-          <div className="bg-white border border-border rounded-xl p-6">
-            {template ? (
-              <DynamicFormRenderer
-                template={template}
-                initialValues={contentJson || {}}
-                onSubmit={async () => {}}
-                mode="view"
-                ideaCreatedAt={idea.created_at || undefined}
-              />
-            ) : (
-              <div className="space-y-4">
-                {contentJson &&
-                  Object.entries(contentJson).map(([key, value]) => (
-                    <div key={key}>
-                      <label className="block text-sm font-medium text-gray-500 mb-1 capitalize">
-                        {key.replace('_', ' ')}
-                      </label>
-                      <p className="text-text">{String(value)}</p>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          {/* Timestamps */}
-          <div className="flex items-center gap-6 text-sm text-gray-500">
-            {idea.created_at && (
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                Created {format(new Date(idea.created_at), 'MMM d, yyyy')}
-              </div>
-            )}
-            {idea.updated_at && idea.updated_at !== idea.created_at && (
-              <div>
-                Updated{' '}
-                {formatDistanceToNow(new Date(idea.updated_at), {
-                  addSuffix: true,
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Sidebar - Actions */}
-        <div className="space-y-6">
-          <div className="bg-white border border-border rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-text">Actions</h2>
-              <button className="flex items-center gap-1 text-sm text-accent hover:underline">
-                <Plus className="w-4 h-4" />
-                Add
-              </button>
-            </div>
-
-            {actions && actions.length > 0 ? (
-              <div className="space-y-3">
-                {actions.map((action) => (
-                  <div
-                    key={action.id}
-                    className={`p-3 rounded-lg border ${
-                      action.status === 'completed'
-                        ? 'bg-green-50 border-green-200'
-                        : 'bg-white border-border'
-                    }`}
-                  >
-                    <p
-                      className={`text-sm ${
-                        action.status === 'completed'
-                          ? 'text-green-700 line-through'
-                          : 'text-text'
-                      }`}
-                    >
-                      {action.text}
-                    </p>
-                    {action.due_time && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Due{' '}
-                        {formatDistanceToNow(new Date(action.due_time), {
-                          addSuffix: true,
-                        })}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-500 text-center py-4">
-                No actions yet
-              </p>
-            )}
-          </div>
-        </div>
+      <div className="bg-white border rounded-2xl p-8">
+        <DynamicFormRenderer
+          template={template}
+          initialValues={idea.content_json as Record<string, any> || {}}
+          onSubmit={handleUpdate}
+          mode={isEditing ? 'edit' : 'view'}
+          ideaCreatedAt={idea.created_at || undefined}
+        />
+        {isEditing && (
+          <button onClick={() => setIsEditing(false)} className="mt-4 px-6 py-2 border rounded-lg">Cancel</button>
+        )}
       </div>
     </div>
   );

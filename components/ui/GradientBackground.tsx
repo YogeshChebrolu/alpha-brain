@@ -4,23 +4,23 @@ import { motion } from 'framer-motion';
 
 /**
  * Gradient Background Component
- * Animated gradient with floating orbs for visual depth
+ * Minimal background with subtle animations
  * Used on the right side of the idea creation form
  */
 export default function GradientBackground() {
   return (
     <motion.div
-      className="sticky top-8 h-[500px] rounded-2xl overflow-hidden"
+      className="sticky top-8 h-[500px] rounded-2xl overflow-hidden bg-neutral-50"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.3, duration: 0.5 }}
     >
       {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-white to-gradient-end" />
+      <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 via-white to-neutral-100" />
 
       {/* Floating orb 1 */}
       <motion.div
-        className="absolute top-16 left-8 w-32 h-32 bg-accent/10 rounded-full blur-3xl"
+        className="absolute top-16 left-8 w-32 h-32 bg-neutral-200/30 rounded-full blur-3xl"
         animate={{
           y: [0, 30, 0],
           x: [0, 20, 0],
@@ -34,7 +34,7 @@ export default function GradientBackground() {
 
       {/* Floating orb 2 */}
       <motion.div
-        className="absolute bottom-16 right-8 w-40 h-40 bg-accent/5 rounded-full blur-3xl"
+        className="absolute bottom-16 right-8 w-40 h-40 bg-neutral-200/20 rounded-full blur-3xl"
         animate={{
           y: [0, -40, 0],
           x: [0, -20, 0],
@@ -48,7 +48,7 @@ export default function GradientBackground() {
 
       {/* Floating orb 3 */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-neutral-300/20 rounded-full blur-2xl"
         animate={{
           scale: [1, 1.2, 1],
           rotate: [0, 180, 360],
@@ -72,7 +72,7 @@ export default function GradientBackground() {
             💡
           </motion.p>
           <motion.p
-            className="text-sm text-gray-400 font-medium"
+            className="text-sm text-neutral-400 font-medium"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}

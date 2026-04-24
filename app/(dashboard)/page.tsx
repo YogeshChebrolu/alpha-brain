@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import InspirationCarousel from '@/components/home/InspirationCarousel';
 import ActionSidebar from '@/components/layout/ActionSidebar';
+import CategoryIcon from '@/components/ui/CategoryIcon';
 import Link from 'next/link';
 import { Plus, FolderPlus } from 'lucide-react';
 
@@ -84,10 +85,13 @@ export default async function HomePage() {
                   <Link
                     key={category.id}
                     href={`/ideas/new?category=${category.id}`}
-                    className="p-4 bg-white border border-border rounded-lg hover:border-accent transition-colors text-center"
+                    className="p-4 bg-white border border-border rounded-lg hover:border-accent transition-colors text-center group"
                   >
-                    <div className="text-2xl mb-2">
-                      {category.icon || '💡'}
+                    <div className="flex justify-center mb-2">
+                      <CategoryIcon
+                        icon={category.icon}
+                        className="w-8 h-8 text-neutral-700 group-hover:text-neutral-900 transition-colors"
+                      />
                     </div>
                     <h3 className="font-medium text-text text-sm">
                       {category.name}

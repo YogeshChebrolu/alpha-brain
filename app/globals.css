@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #1E293B;
-  --border: #E2E8F0;
-  --accent: #6366F1;
-  --gradient-start: #EEF2FF;
+  --background: #FFFFFF;
+  --foreground: #171717;
+  --border: #E5E5E5;
+  --accent: #171717;
+  --gradient-start: #FAFAFA;
   --gradient-end: #FFFFFF;
 }
 
 @theme inline {
-  /* Custom color palette for "Second Brain" aesthetic */
+  /* Custom color palette - Minimal neutral theme */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-text: var(--foreground);
@@ -26,4 +26,98 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Markdown prose styles */
+.prose {
+  max-width: none;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.prose li {
+  margin: 0.5em 0;
+}
+
+.prose p {
+  margin: 1em 0;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose h1 { font-size: 2em; }
+.prose h2 { font-size: 1.5em; }
+.prose h3 { font-size: 1.25em; }
+
+.prose strong {
+  font-weight: 700;
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose code {
+  background: #f4f4f5;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25em;
+  font-size: 0.9em;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.prose pre {
+  background: #f4f4f5;
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose blockquote {
+  border-left: 4px solid #e5e5e5;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #666;
+}
+
+.prose a {
+  color: #171717;
+  text-decoration: underline;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.prose th, .prose td {
+  border: 1px solid #e5e5e5;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.prose th {
+  background: #f4f4f5;
+  font-weight: 700;
 }

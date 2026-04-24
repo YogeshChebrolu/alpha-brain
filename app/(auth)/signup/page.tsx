@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Brain, Mail, Lock, Loader2, User } from 'lucide-react';
-import { STOCK_THESIS_TEMPLATE, DEFAULT_IDEA_TEMPLATE } from '@/lib/constants/default-templates';
+import { Brain, Mail, Lock, Loader2 } from 'lucide-react';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -41,66 +40,17 @@ export default function SignupPage() {
 
       if (signUpError) throw signUpError;
 
-      if (data.user) {
-        // Create default templates for new user
-        const { data: stockTemplate } = await supabase
-          .from('templates')
-          .insert({
-            user_id: data.user.id,
-            name: 'Stock Thesis',
-            form_structure: STOCK_THESIS_TEMPLATE,
-            is_system: false,
-          })
-          .select()
-          .single();
+      // Supabase auth handles user creation automatically in auth.users table
+      // No need to create manual user entries
 
-        const { data: generalTemplate } = await supabase
-          .from('templates')
-          .insert({
-            user_id: data.user.id,
-            name: 'General Idea',
-            form_structure: DEFAULT_IDEA_TEMPLATE,
-            is_system: false,
-          })
-          .select()
-          .single();
-
-        // Create default categories
-        if (stockTemplate) {
-          await supabase.from('categories').insert({
-            user_id: data.user.id,
-            name: 'Stock Thesis',
-            template_id: stockTemplate.id,
-            icon: '📈',
-          });
-        }
-
-        if (generalTemplate) {
-          await supabase.from('categories').insert({
-            user_id: data.user.id,
-            name: 'General Ideas',
-            template_id: generalTemplate.id,
-            icon: '💡',
-          });
-        }
-
-        // Add more default categories
-        await supabase.from('categories').insert([
-          {
-            user_id: data.user.id,
-            name: 'Book Notes',
-            template_id: generalTemplate?.id,
-            icon: '📚',
-          },
-          {
-            user_id: data.user.id,
-            name: 'Personal Projects',
-            template_id: generalTemplate?.id,
-            icon: '🚀',
-          },
-        ]);
+      // Check if email confirmation is required
+      if (data.user && !data.session) {
+        setError('Please check your email to confirm your account before logging in.');
+        setLoading(false);
+        return;
       }
 
+      // Successfully signed up and logged in
       router.push('/');
       router.refresh();
     } catch (err) {
@@ -114,13 +64,13 @@ export default function SignupPage() {
     <div className="space-y-8">
       {/* Mobile Logo */}
       <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-        <Brain className="w-10 h-10 text-accent" />
-        <span className="text-2xl font-bold text-text">Alpha Brain</span>
+        <Brain className="w-10 h-10 text-neutral-900" />
+        <span className="text-2xl font-bold text-neutral-900">Alpha Brain</span>
       </div>
 
       <div>
-        <h2 className="text-3xl font-bold text-text">Create your account</h2>
-        <p className="text-gray-500 mt-2">
+        <h2 className="text-3xl font-bold text-neutral-900">Create your account</h2>
+        <p className="text-neutral-500 mt-2">
           Start building your second brain today
         </p>
       </div>
@@ -133,52 +83,52 @@ export default function SignupPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-text mb-2">
+          <label className="block text-sm font-medium text-neutral-900 mb-2">
             Email
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-text bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900 bg-white"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-text mb-2">
+          <label className="block text-sm font-medium text-neutral-900 mb-2">
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-text bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900 bg-white"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-text mb-2">
+          <label className="block text-sm font-medium text-neutral-900 mb-2">
             Confirm Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-text bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900 bg-white"
             />
           </div>
         </div>
@@ -186,7 +136,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-accent text-white py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+          className="w-full bg-neutral-900 text-white py-3 rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -199,9 +149,9 @@ export default function SignupPage() {
         </button>
       </form>
 
-      <p className="text-center text-gray-500">
+      <p className="text-center text-neutral-500">
         Already have an account?{' '}
-        <Link href="/login" className="text-accent hover:underline font-medium">
+        <Link href="/login" className="text-neutral-900 hover:underline font-medium">
           Sign in
         </Link>
       </p>
