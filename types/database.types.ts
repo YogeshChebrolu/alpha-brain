@@ -160,6 +160,10 @@ export type Database = {
           name: string
           template_id: string | null
           user_id: string
+          color: string
+          gradient: string
+          archived: boolean
+          archived_at: string | null
         }
         Insert: {
           created_at?: string | null
@@ -168,6 +172,10 @@ export type Database = {
           name: string
           template_id?: string | null
           user_id: string
+          color?: string
+          gradient?: string
+          archived?: boolean
+          archived_at?: string | null
         }
         Update: {
           created_at?: string | null
@@ -176,6 +184,10 @@ export type Database = {
           name?: string
           template_id?: string | null
           user_id?: string
+          color?: string
+          gradient?: string
+          archived?: boolean
+          archived_at?: string | null
         }
         Relationships: [
           {
@@ -299,6 +311,8 @@ export type Database = {
           title: string
           updated_at: string | null
           user_id: string
+          archived: boolean
+          archived_at: string | null
         }
         Insert: {
           category_id?: string | null
@@ -309,6 +323,8 @@ export type Database = {
           title: string
           updated_at?: string | null
           user_id: string
+          archived?: boolean
+          archived_at?: string | null
         }
         Update: {
           category_id?: string | null
@@ -319,6 +335,8 @@ export type Database = {
           title?: string
           updated_at?: string | null
           user_id?: string
+          archived?: boolean
+          archived_at?: string | null
         }
         Relationships: [
           {

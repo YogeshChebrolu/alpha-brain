@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DynamicFormRenderer from '@/components/ideas/DynamicFormRenderer';
 import { ArrowLeft, Loader2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import CategoryIcon from '@/components/ui/CategoryIcon';
 import { Tables } from '@/types/database.types';
 import { linkResourcesToIdea, moveTemporaryFiles } from '@/lib/helpers/resources';
 import { syncActionsToIdea } from '@/lib/helpers/actions';
@@ -191,39 +190,50 @@ export default function NewIdeaPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {categories.map((category, index) => (
-                    <motion.button
-                      key={category.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      onClick={() => handleCategorySelect(category)}
-                      className="group relative p-8 bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-2xl hover:bg-white hover:border-neutral-300 hover:shadow-lg transition-all duration-200 text-left"
-                    >
-                      <div className="relative">
-                        {/* Icon */}
-                        <div className="mb-4 transform group-hover:scale-105 transition-transform duration-200 flex justify-center">
-                          <CategoryIcon
-                            icon={category.icon}
-                            className="w-12 h-12 text-neutral-700 group-hover:text-neutral-900 transition-colors"
-                          />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {categories.map((category, index) => {
+                    const color = category.color || '#0EA5E9';
+                    return (
+                      <motion.button
+                        key={category.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        onClick={() => handleCategorySelect(category)}
+                        className="group relative p-6 rounded-2xl transition-all duration-300 text-left hover:-translate-y-1"
+                        style={{
+                          background: `linear-gradient(135deg, ${color}08 0%, ${color}15 100%)`,
+                          boxShadow: `0 4px 20px -4px ${color}20`,
+                        }}
+                      >
+                        {/* Left accent bar */}
+                        <div
+                          className="absolute left-0 top-4 bottom-4 w-1.5 rounded-full"
+                          style={{ background: `linear-gradient(180deg, ${color} 0%, ${color}80 100%)` }}
+                        />
+
+                        <div className="pl-4">
+                          {/* Category name */}
+                          <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                            {category.name}
+                          </h3>
+
+                          {/* Field count */}
+                          {category.templates && (
+                            <p className="text-sm text-neutral-500">
+                              {(category.templates.form_structure as any[])?.length || 0} fields
+                            </p>
+                          )}
                         </div>
 
-                        {/* Category name */}
-                        <h3 className="text-lg font-semibold text-neutral-900 mb-1">
-                          {category.name}
-                        </h3>
-
-                        {/* Field count */}
-                        {category.templates && (
-                          <p className="text-sm text-neutral-500">
-                            {(category.templates.form_structure as any[])?.length || 0} fields
-                          </p>
-                        )}
-                      </div>
-                    </motion.button>
-                  ))}
+                        {/* Hover glow effect */}
+                        <div
+                          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                          style={{ boxShadow: `0 8px 32px -8px ${color}40, 0 0 0 1px ${color}15` }}
+                        />
+                      </motion.button>
+                    );
+                  })}
                 </div>
               )}
             </motion.div>
@@ -243,11 +253,15 @@ export default function NewIdeaPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-8 inline-flex items-center gap-3 px-5 py-3 bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-xl"
+                className="mb-8 inline-flex items-center gap-3 px-5 py-3 rounded-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${selectedCategory.color || '#0EA5E9'}10 0%, ${selectedCategory.color || '#0EA5E9'}18 100%)`,
+                  boxShadow: `0 2px 12px -2px ${selectedCategory.color || '#0EA5E9'}20`,
+                }}
               >
-                <CategoryIcon
-                  icon={selectedCategory.icon}
-                  className="w-8 h-8 text-neutral-700"
+                <div
+                  className="w-1.5 h-8 rounded-full"
+                  style={{ backgroundColor: selectedCategory.color || '#0EA5E9' }}
                 />
                 <div>
                   <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider">

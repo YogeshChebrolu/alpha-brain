@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import InspirationCarousel from '@/components/home/InspirationCarousel';
 import ActionSidebar from '@/components/layout/ActionSidebar';
-import CategoryIcon from '@/components/ui/CategoryIcon';
 import Link from 'next/link';
 import { Plus, FolderPlus } from 'lucide-react';
 
@@ -83,28 +82,44 @@ export default async function HomePage() {
             <div>
               <h2 className="text-xl font-bold text-text mb-4">Your Categories</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/ideas/new?category=${category.id}`}
-                    className="p-4 bg-white border border-border rounded-lg hover:border-accent transition-colors text-center group"
-                  >
-                    <div className="flex justify-center mb-2">
-                      <CategoryIcon
-                        icon={category.icon}
-                        className="w-8 h-8 text-neutral-700 group-hover:text-neutral-900 transition-colors"
+                {categories.map((category) => {
+                  const color = category.color || '#0EA5E9';
+                  return (
+                    <Link
+                      key={category.id}
+                      href={`/ideas/new?category=${category.id}`}
+                      className="relative p-5 rounded-xl transition-all duration-300 group hover:-translate-y-0.5"
+                      style={{
+                        background: `linear-gradient(135deg, ${color}08 0%, ${color}12 100%)`,
+                        boxShadow: `0 2px 12px -2px ${color}15`,
+                      }}
+                    >
+                      {/* Left accent */}
+                      <div
+                        className="absolute left-0 top-3 bottom-3 w-1 rounded-full"
+                        style={{ backgroundColor: color }}
                       />
-                    </div>
-                    <h3 className="font-medium text-text text-sm">
-                      {category.name}
-                    </h3>
-                  </Link>
-                ))}
+
+                      <div className="pl-3">
+                        <h3 className="font-semibold text-neutral-900 text-sm">
+                          {category.name}
+                        </h3>
+                      </div>
+
+                      {/* Hover glow */}
+                      <div
+                        className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                        style={{ boxShadow: `0 4px 20px -4px ${color}30` }}
+                      />
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           )}
 
           {/* Stats */}
+          <h2 className="text-xl font-bold text-text mb-4">Your Stats</h2>
           <div className="grid grid-cols-3 gap-4">
             <div className="p-4 bg-white border border-border rounded-lg text-center">
               <p className="text-3xl font-bold text-accent">{ideasCount || 0}</p>

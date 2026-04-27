@@ -7,26 +7,97 @@ import { FormElementConfig, FormElementType } from '@/types/form-element.types';
 import ElementLibraryV2 from '@/components/template-builder/ElementLibraryV2';
 import TemplateCanvasV2 from '@/components/template-builder/TemplateCanvasV2';
 import { createDefaultConfig } from '@/components/form-elements/registry';
-import { ArrowLeft, Save, Loader2, Sparkles, PanelLeftClose, PanelLeft, LucideIcon } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Sparkles, PanelLeftClose, PanelLeft } from 'lucide-react';
 import Link from 'next/link';
 import { DndContext, DragEndEvent, DragOverlay, useDroppable, DragStartEvent } from '@dnd-kit/core';
 import { DEFAULT_IDEA_TEMPLATE } from '@/lib/constants/default-templates';
 
-// Lucide icon options for categories
-const ICON_OPTIONS: { name: string; icon: LucideIcon }[] = [
-  { name: 'Lightbulb', icon: Icons.Lightbulb },
-  { name: 'TrendingUp', icon: Icons.TrendingUp },
-  { name: 'BookOpen', icon: Icons.BookOpen },
-  { name: 'Rocket', icon: Icons.Rocket },
-  { name: 'Target', icon: Icons.Target },
-  { name: 'DollarSign', icon: Icons.DollarSign },
-  { name: 'Microscope', icon: Icons.Microscope },
-  { name: 'Palette', icon: Icons.Palette },
-  { name: 'Zap', icon: Icons.Zap },
-  { name: 'Star', icon: Icons.Star },
-  { name: 'Briefcase', icon: Icons.Briefcase },
-  { name: 'Code', icon: Icons.Code },
+// Refined color palette - muted and sophisticated for white backgrounds
+const COLOR_OPTIONS = [
+  {
+    name: 'Ocean',
+    primary: '#0EA5E9',
+    secondary: '#0284C7',
+    gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
+    light: '#E0F2FE'
+  },
+  {
+    name: 'Sunset',
+    primary: '#F59E0B',
+    secondary: '#D97706',
+    gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+    light: '#FEF3C7'
+  },
+  {
+    name: 'Forest',
+    primary: '#10B981',
+    secondary: '#059669',
+    gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+    light: '#D1FAE5'
+  },
+  {
+    name: 'Lavender',
+    primary: '#8B5CF6',
+    secondary: '#7C3AED',
+    gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
+    light: '#EDE9FE'
+  },
+  {
+    name: 'Rose',
+    primary: '#EC4899',
+    secondary: '#DB2777',
+    gradient: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
+    light: '#FCE7F3'
+  },
+  {
+    name: 'Coral',
+    primary: '#F97316',
+    secondary: '#EA580C',
+    gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+    light: '#FFEDD5'
+  },
+  {
+    name: 'Emerald',
+    primary: '#14B8A6',
+    secondary: '#0D9488',
+    gradient: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
+    light: '#CCFBF1'
+  },
+  {
+    name: 'Indigo',
+    primary: '#6366F1',
+    secondary: '#4F46E5',
+    gradient: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+    light: '#E0E7FF'
+  },
+  {
+    name: 'Crimson',
+    primary: '#EF4444',
+    secondary: '#DC2626',
+    gradient: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
+    light: '#FEE2E2'
+  },
+  {
+    name: 'Grape',
+    primary: '#A855F7',
+    secondary: '#9333EA',
+    gradient: 'linear-gradient(135deg, #A855F7 0%, #9333EA 100%)',
+    light: '#F3E8FF'
+  },
+  {
+    name: 'Slate',
+    primary: '#64748B',
+    secondary: '#475569',
+    gradient: 'linear-gradient(135deg, #64748B 0%, #475569 100%)',
+    light: '#F1F5F9'
+  },
+  {
+    name: 'Amber',
+    primary: '#FBBF24',
+    secondary: '#F59E0B',
+    gradient: 'linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%)',
+    light: '#FEF3C7'
+  },
 ];
 
 /**
@@ -36,7 +107,8 @@ const ICON_OPTIONS: { name: string; icon: LucideIcon }[] = [
  */
 export default function NewCategoryPage() {
   const [categoryName, setCategoryName] = useState('');
-  const [categoryIcon, setCategoryIcon] = useState('Lightbulb');
+  const [categoryColor, setCategoryColor] = useState(COLOR_OPTIONS[0].primary);
+  const [categoryGradient, setCategoryGradient] = useState(COLOR_OPTIONS[0].gradient);
   const [templateElements, setTemplateElements] = useState<FormElementConfig[]>(
     DEFAULT_IDEA_TEMPLATE
   );
@@ -139,7 +211,8 @@ export default function NewCategoryPage() {
         user_id: session.user.id,
         template_id: template.id,
         name: categoryName,
-        icon: categoryIcon,
+        color: categoryColor,
+        gradient: categoryGradient,
       }).select().single();
 
       if (categoryError) throw categoryError;
@@ -223,24 +296,35 @@ export default function NewCategoryPage() {
             <div className="flex items-start gap-6">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-3">
-                  Icon
+                  Category Color
                 </label>
-                <div className="grid grid-cols-6 gap-2">
-                  {ICON_OPTIONS.map(({ name, icon: Icon }) => (
+                <div className="grid grid-cols-6 gap-3">
+                  {COLOR_OPTIONS.map((color) => (
                     <button
-                      key={name}
-                      onClick={() => setCategoryIcon(name)}
-                      className={`p-3 rounded-lg border transition-all ${
-                        categoryIcon === name
-                          ? 'border-neutral-900 bg-neutral-900/10 scale-110'
-                          : 'border-neutral-200 hover:border-neutral-400 hover:scale-105'
+                      key={color.primary}
+                      onClick={() => {
+                        setCategoryColor(color.primary);
+                        setCategoryGradient(color.gradient);
+                      }}
+                      className={`group relative w-14 h-14 rounded-xl transition-all shadow-sm hover:shadow-md ${
+                        categoryColor === color.primary
+                          ? 'ring-2 ring-neutral-900 ring-offset-2 scale-105'
+                          : 'hover:scale-105'
                       }`}
-                      title={name}
+                      title={color.name}
+                      style={{ background: color.gradient }}
                     >
-                      <Icon className="w-5 h-5 text-neutral-900" />
+                      {categoryColor === color.primary && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-2.5 h-2.5 bg-white rounded-full shadow-lg" />
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
+                <p className="text-xs text-neutral-500 mt-2">
+                  {COLOR_OPTIONS.find(c => c.primary === categoryColor)?.name || 'Ocean'}
+                </p>
               </div>
               <div className="flex-1">
                 <label className="block text-sm font-medium text-neutral-700 mb-3">

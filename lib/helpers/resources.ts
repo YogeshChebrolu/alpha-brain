@@ -9,13 +9,22 @@ export async function linkResourcesToIdea(ideaId: string, resourceIds: string[])
   if (!resourceIds || resourceIds.length === 0) return;
 
   try {
+    // Remove duplicate resource IDs
+    const uniqueResourceIds = [...new Set(resourceIds)];
+
     // Create junction table entries
-    const attachments = resourceIds.map((resourceId) => ({
+    const attachments = uniqueResourceIds.map((resourceId) => ({
       idea_id: ideaId,
       resource_id: resourceId,
     }));
 
-    const { error } = await supabase.from('idea_attachments').insert(attachments);
+    // Use upsert to handle duplicates gracefully
+    const { error } = await supabase
+      .from('idea_attachments')
+      .upsert(attachments, {
+        onConflict: 'idea_id,resource_id',
+        ignoreDuplicates: true
+      });
 
     if (error) throw error;
   } catch (err) {
@@ -33,12 +42,21 @@ export async function linkResourcesToAction(actionId: string, resourceIds: strin
   if (!resourceIds || resourceIds.length === 0) return;
 
   try {
-    const attachments = resourceIds.map((resourceId) => ({
+    // Remove duplicate resource IDs
+    const uniqueResourceIds = [...new Set(resourceIds)];
+
+    const attachments = uniqueResourceIds.map((resourceId) => ({
       action_id: actionId,
       resource_id: resourceId,
     }));
 
-    const { error } = await supabase.from('action_attachments').insert(attachments);
+    // Use upsert to handle duplicates gracefully
+    const { error } = await supabase
+      .from('action_attachments')
+      .upsert(attachments, {
+        onConflict: 'action_id,resource_id',
+        ignoreDuplicates: true
+      });
 
     if (error) throw error;
   } catch (err) {

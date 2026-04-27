@@ -113,14 +113,30 @@ export default function IdeaDetailPage() {
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="w-6 h-6 animate-spin" /></div>;
   if (!idea || !template) return <div className="text-center p-12">Idea not found</div>;
 
+  const categoryColor = idea.categories?.color || '#0EA5E9';
+
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Header with category badge */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/" className="p-2 hover:bg-neutral-100 rounded-lg"><ArrowLeft className="w-5 h-5" /></Link>
-          <div>
-            <h1 className="text-3xl font-bold">{idea.title}</h1>
-            <p className="text-sm text-neutral-500 mt-1">{idea.categories?.name}</p>
+          <Link href="/" className="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div
+            className="flex items-center gap-3 px-4 py-2 rounded-xl"
+            style={{
+              background: `linear-gradient(135deg, ${categoryColor}10 0%, ${categoryColor}18 100%)`,
+            }}
+          >
+            <div
+              className="w-1.5 h-10 rounded-full"
+              style={{ backgroundColor: categoryColor }}
+            />
+            <div>
+              <p className="text-xs text-neutral-500 font-medium">{idea.categories?.name}</p>
+              <h1 className="text-2xl font-bold text-neutral-900">{idea.title}</h1>
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -138,17 +154,35 @@ export default function IdeaDetailPage() {
           )}
         </div>
       </div>
-      <div className="bg-white border rounded-2xl p-8">
-        <DynamicFormRenderer
-          template={template}
-          initialValues={idea.content_json as Record<string, any> || {}}
-          onSubmit={handleUpdate}
-          mode={isEditing ? 'edit' : 'view'}
-          ideaCreatedAt={idea.created_at || undefined}
+
+      {/* Content card with color accent */}
+      <div
+        className="rounded-2xl p-8 relative overflow-hidden"
+        style={{
+          background: `linear-gradient(180deg, ${categoryColor}06 0%, white 100px)`,
+          boxShadow: `0 4px 24px -4px ${categoryColor}15`,
+        }}
+      >
+        {/* Left accent bar */}
+        <div
+          className="absolute left-0 top-6 bottom-6 w-1 rounded-full"
+          style={{ backgroundColor: categoryColor }}
         />
-        {isEditing && (
-          <button onClick={() => setIsEditing(false)} className="mt-4 px-6 py-2 border rounded-lg">Cancel</button>
-        )}
+
+        <div className="relative z-10 pl-6">
+          <DynamicFormRenderer
+            template={template}
+            initialValues={idea.content_json as Record<string, any> || {}}
+            onSubmit={handleUpdate}
+            mode={isEditing ? 'edit' : 'view'}
+            ideaCreatedAt={idea.created_at || undefined}
+          />
+          {isEditing && (
+            <button onClick={() => setIsEditing(false)} className="mt-4 px-6 py-2 border rounded-lg hover:bg-neutral-50 transition-colors">
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

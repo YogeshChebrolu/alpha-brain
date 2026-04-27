@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
-import { Plus, FolderPlus, Trash2 } from 'lucide-react';
-import CategoryIcon from '@/components/ui/CategoryIcon';
+import { Plus, FolderPlus } from 'lucide-react';
 import CategoryDeleteButton from '@/components/categories/CategoryDeleteButton';
 
 export default async function CategoriesPage() {
@@ -32,44 +31,62 @@ export default async function CategoriesPage() {
       </div>
 
       {categories && categories.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              className="group relative p-6 bg-white border border-neutral-200 rounded-xl hover:shadow-md transition-all"
-            >
-              {/* Delete button - shows on hover */}
-              <CategoryDeleteButton categoryId={category.id} categoryName={category.name} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((category) => {
+            const color = category.color || '#0EA5E9';
+            return (
+              <div
+                key={category.id}
+                className="group relative rounded-2xl transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  background: `linear-gradient(135deg, ${color}08 0%, ${color}15 100%)`,
+                  boxShadow: `0 4px 20px -4px ${color}20`,
+                }}
+              >
+                {/* Delete button - shows on hover */}
+                <CategoryDeleteButton categoryId={category.id} categoryName={category.name} />
 
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-12 h-12 bg-neutral-50 rounded-xl">
-                    <CategoryIcon
-                      icon={category.icon}
-                      className="w-6 h-6 text-neutral-700"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-neutral-900">
+                {/* Left accent bar */}
+                <div
+                  className="absolute left-0 top-4 bottom-4 w-1 rounded-full"
+                  style={{ background: category.gradient || `linear-gradient(180deg, ${color} 0%, ${color}99 100%)` }}
+                />
+
+                {/* Content */}
+                <div className="p-6 pl-8">
+                  {/* Category info */}
+                  <div className="mb-4">
+                    <h3 className="font-bold text-neutral-900 text-xl mb-1">
                       {category.name}
                     </h3>
-                    <p className="text-xs text-neutral-500">
+                    <p className="text-sm text-neutral-500">
                       {(category.templates?.form_structure as any[])?.length || 0} fields
                     </p>
                   </div>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-neutral-100">
-                <Link
-                  href={`/ideas/new?category=${category.id}`}
-                  className="flex-1 text-center px-3 py-2 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors"
-                >
-                  Create Idea
-                </Link>
+                  {/* Create button */}
+                  <Link
+                    href={`/ideas/new?category=${category.id}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:opacity-90"
+                    style={{
+                      backgroundColor: color,
+                      color: 'white'
+                    }}
+                  >
+                    Create Idea
+                  </Link>
+                </div>
+
+                {/* Hover glow effect */}
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    boxShadow: `0 8px 32px -8px ${color}40, 0 0 0 1px ${color}20`,
+                  }}
+                />
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="text-center py-16">
