@@ -1,7 +1,7 @@
 'use client';
 
 import { FormElementProps } from '@/types/form-element.types';
-import { Plus, Trash2, CheckCircle2, Circle, Clock, ChevronDown, Ban, Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Circle, Clock, ChevronDown, Ban, Calendar, ChevronLeft, ChevronRight, X, Bell, BellOff } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
 
@@ -10,6 +10,7 @@ type Action = {
   text: string;
   status: 'pending' | 'inprogress' | 'done' | 'skipped';
   due_time?: string;
+  notify?: boolean;
 };
 
 const STATUS_OPTIONS = [
@@ -216,10 +217,17 @@ export default function ActionsElement({
                       {action.text}
                     </p>
                     {action.due_time && (
-                      <p className="text-xs text-neutral-500 mt-1 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {format(new Date(action.due_time), 'MMM d, yyyy')}
-                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className="text-xs text-neutral-500 flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(action.due_time), 'MMM d, yyyy')}
+                        </p>
+                        {action.notify && (
+                          <span className="text-xs text-amber-600 flex items-center gap-1">
+                            <Bell className="w-3 h-3" />
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                   <div
@@ -375,6 +383,29 @@ export default function ActionsElement({
                     />
                   )}
                 </div>
+
+                {/* Notify Toggle - only show when due_time is set */}
+                {action.due_time && (
+                  <button
+                    type="button"
+                    onClick={() => updateAction(index, { notify: !action.notify })}
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all text-xs font-medium ${
+                      action.notify
+                        ? 'bg-amber-50 border-amber-200 text-amber-700'
+                        : 'bg-white border-neutral-200 text-neutral-400 hover:border-neutral-300'
+                    }`}
+                    title={action.notify ? 'Notifications enabled' : 'Enable notifications'}
+                  >
+                    {action.notify ? (
+                      <Bell className="w-3.5 h-3.5" />
+                    ) : (
+                      <BellOff className="w-3.5 h-3.5" />
+                    )}
+                    <span className="hidden sm:inline">
+                      {action.notify ? 'Notify' : 'No alert'}
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
             <button

@@ -6,7 +6,6 @@ import {
 } from '@/types/form-element.types';
 import TextElement from './TextElement';
 import MarkdownElement from './MarkdownElement';
-import StockTickerElement from './StockTickerElement';
 import StockGraphElement from './StockGraphElement';
 import SelectElement from './SelectElement';
 import FileUploadElement from './FileUploadElement';
@@ -17,7 +16,6 @@ import {
   Type,
   AlignLeft,
   Tag,
-  TrendingUp,
   TrendingDown,
   Upload,
   CheckSquare,
@@ -83,18 +81,6 @@ export const LIBRARY_METADATA: Record<FormElementType, ElementMetadata> = {
       options: ['Option 1', 'Option 2', 'Option 3'],
     },
     component: SelectElement,
-  },
-  stock_ticker: {
-    type: 'stock_ticker',
-    name: 'Stock Ticker',
-    description: 'Stock symbol with live price & returns',
-    icon: TrendingUp,
-    defaultConfig: {
-      label: 'Stock Symbol',
-      placeholder: 'e.g., AAPL',
-      required: true,
-    },
-    component: StockTickerElement,
   },
   file_upload: {
     type: 'file_upload',

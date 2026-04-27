@@ -5,7 +5,6 @@ export type FormElementType =
   | 'textarea'
   | 'markdown'
   | 'select'
-  | 'stock_ticker'
   | 'stock_graph'
   | 'file_upload'
   | 'checkbox'
