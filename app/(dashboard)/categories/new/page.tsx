@@ -198,7 +198,7 @@ export default function NewCategoryPage() {
         .insert({
           user_id: session.user.id,
           name: `${categoryName} Template`,
-          form_structure: templateElements,
+          form_structure: templateElements as any,
           is_system: false,
         })
         .select()
