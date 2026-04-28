@@ -50,13 +50,13 @@ export default async function ActionsPage() {
   const ActionItem = ({
     action,
   }: {
-    action: (typeof actions)[0] & { ideas: { id: string; title: string } | null };
+    action: NonNullable<typeof actions>[0];
   }) => (
     <div className="group p-4 bg-white border border-neutral-200 rounded-xl hover:shadow-md hover:border-neutral-300 transition-all">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            {getStatusBadge(action.status)}
+            {getStatusBadge(action.status || 'pending')}
             {action.due_time && (
               <span className="text-xs text-neutral-500">
                 Due {formatDistanceToNow(new Date(action.due_time), { addSuffix: true })}

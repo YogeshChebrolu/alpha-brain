@@ -37,7 +37,7 @@ export default async function IdeasPage() {
 
       {/* Ideas Grid */}
       {ideas && ideas.length > 0 ? (
-        <IdeasGrid ideas={ideas} />
+        <IdeasGrid ideas={ideas as any} />
       ) : (
         <div className="text-center py-20">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-neutral-100 rounded-2xl mb-4">

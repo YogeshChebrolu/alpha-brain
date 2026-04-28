@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brain, Home, Lightbulb, Zap, FolderOpen, LogOut } from 'lucide-react';
+import { Brain, Home, Lightbulb, Zap, FolderOpen, FileText, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/ideas', label: 'Ideas', icon: Lightbulb },
+  { href: '/articles', label: 'Articles', icon: FileText },
   { href: '/categories', label: 'Categories', icon: FolderOpen },
   { href: '/actions', label: 'Actions', icon: Zap },
 ];

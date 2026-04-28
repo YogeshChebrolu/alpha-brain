@@ -7,6 +7,27 @@ import { Plus, FolderPlus } from 'lucide-react';
 export default async function HomePage() {
   const supabase = await createClient();
 
+  // Fetch inspirations with linked articles (latest 5)
+  let inspirations = null;
+  try {
+    const { data } = await supabase
+      .from('inspirations')
+      .select(`
+        *,
+        article:articles (
+          slug,
+          title,
+          banner_image_url
+        )
+      `)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(5);
+    inspirations = data;
+  } catch {
+    // Table might not exist yet, use fallback
+  }
+
   // Fetch pending actions with related idea
   const { data: actions } = await supabase
     .from('actions')
@@ -42,7 +63,7 @@ export default async function HomePage() {
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-8">
           {/* Inspiration Carousel */}
-          <InspirationCarousel />
+          <InspirationCarousel inspirations={inspirations || undefined} />
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
