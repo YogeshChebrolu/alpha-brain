@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Brain, Mail, Lock, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -39,17 +40,26 @@ export default function LoginPage() {
   return (
     <div className="space-y-8">
       {/* Mobile Logo */}
-      <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="lg:hidden flex items-center justify-center gap-3 mb-8"
+      >
         <Brain className="w-10 h-10 text-neutral-900" />
         <span className="text-2xl font-bold text-neutral-900">Alpha Brain</span>
-      </div>
+      </motion.div>
 
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
         <h2 className="text-3xl font-bold text-neutral-900">Welcome back</h2>
         <p className="text-neutral-500 mt-2">
           Sign in to continue to your insight lab
         </p>
-      </div>
+      </motion.div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
@@ -92,9 +102,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <button
+        <motion.button
           type="submit"
           disabled={loading}
+          whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+          whileTap={{ scale: 0.98 }}
           className="w-full bg-neutral-900 text-white py-3 rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
         >
           {loading ? (
@@ -105,7 +117,7 @@ export default function LoginPage() {
           ) : (
             'Sign In'
           )}
-        </button>
+        </motion.button>
       </form>
 
       <p className="text-center text-neutral-500">
