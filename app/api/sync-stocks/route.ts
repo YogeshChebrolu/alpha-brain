@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { fetchHistoricalPrices, fetchCurrentPrice } from '@/lib/helpers/yahoo-finance';
 
 /**
  * Manual Stock Sync API Route
@@ -11,7 +12,7 @@ export async function POST() {
   try {
     const supabase = await createClient();
 
-    // Get all unique tickers from ideas
+    // Get all ideas (simplified query for debugging)
     const { data: ideas, error: ideasError } = await supabase
       .from('ideas')
       .select('content_json, created_at');
@@ -20,21 +21,50 @@ export async function POST() {
       throw new Error(`Failed to fetch ideas: ${ideasError.message}`);
     }
 
-    // Extract unique tickers
+    // Extract unique tickers by scanning content_json values
     const tickersMap = new Map<string, string[]>();
 
-    ideas?.forEach((idea) => {
+    ideas?.forEach((idea: any) => {
       const contentJson = idea.content_json as Record<string, any> | null;
-      const ticker = contentJson?.ticker;
+      if (!contentJson) return;
 
-      if (ticker && typeof ticker === 'string') {
-        const normalizedTicker = ticker.toUpperCase().trim();
-        const date = new Date(idea.created_at!).toISOString().split('T')[0];
+      // Get template form structure to find stock_graph fields
+      const formStructure = idea.categories?.templates?.form_structure as any[];
 
-        if (!tickersMap.has(normalizedTicker)) {
-          tickersMap.set(normalizedTicker, []);
-        }
-        tickersMap.get(normalizedTicker)!.push(date);
+      if (formStructure) {
+        const stockGraphFields = formStructure.filter(field => field.type === 'stock_graph');
+
+        // Extract ticker values from stock_graph fields
+        stockGraphFields.forEach(field => {
+          const ticker = contentJson[field.id];
+
+          if (ticker && typeof ticker === 'string' && ticker.trim()) {
+            const normalizedTicker = ticker.toUpperCase().trim();
+            const date = new Date(idea.created_at!).toISOString().split('T')[0];
+
+            if (!tickersMap.has(normalizedTicker)) {
+              tickersMap.set(normalizedTicker, []);
+            }
+            tickersMap.get(normalizedTicker)!.push(date);
+          }
+        });
+      } else {
+        // Fallback: scan all values in content_json for potential ticker symbols
+        // Look for short uppercase strings (1-5 chars) that could be tickers
+        Object.values(contentJson).forEach(value => {
+          if (typeof value === 'string') {
+            const trimmed = value.trim().toUpperCase();
+            // Match typical stock ticker pattern: 1-5 uppercase letters
+            if (/^[A-Z]{1,5}$/.test(trimmed)) {
+              const date = new Date(idea.created_at!).toISOString().split('T')[0];
+
+              if (!tickersMap.has(trimmed)) {
+                tickersMap.set(trimmed, []);
+              }
+              tickersMap.get(trimmed)!.push(date);
+            }
+          }
+        });
       }
     });
 
@@ -42,6 +72,15 @@ export async function POST() {
       return NextResponse.json({
         success: true,
         message: 'No tickers to sync',
+        debug: {
+          ideasCount: ideas?.length || 0,
+          sampleIdea: ideas?.[0] ? {
+            hasContentJson: !!ideas[0].content_json,
+            contentJsonKeys: ideas[0].content_json ? Object.keys(ideas[0].content_json) : [],
+            hasCategories: !!ideas[0].categories,
+            hasTemplates: !!(ideas[0] as any).categories?.templates,
+          } : null,
+        },
         results: []
       });
     }
@@ -51,32 +90,8 @@ export async function POST() {
 
     for (const [ticker, creationDates] of tickersMap.entries()) {
       try {
-        // Fetch from Yahoo Finance
-        const response = await fetch(
-          `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
-          {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Yahoo Finance returned ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.chart?.result?.[0]?.meta) {
-          throw new Error('Invalid response from Yahoo Finance');
-        }
-
-        const meta = data.chart.result[0].meta;
-        const currentPrice = meta.regularMarketPrice;
-        const previousClose = meta.previousClose || meta.chartPreviousClose;
-        const changePct = previousClose
-          ? ((currentPrice - previousClose) / previousClose) * 100
-          : 0;
+        // Fetch current price
+        const { price: currentPrice, changePct } = await fetchCurrentPrice(ticker);
 
         // Get existing historical prices
         const { data: existing } = await supabase
@@ -85,13 +100,24 @@ export async function POST() {
           .eq('ticker', ticker)
           .single();
 
-        const historicalPrices = (existing?.historical_prices as Record<string, number>) || {};
-        historicalPrices[today] = currentPrice;
+        let historicalPrices: Record<string, number>;
 
-        // Store price for creation dates
-        for (const creationDate of creationDates) {
-          if (!historicalPrices[creationDate]) {
-            historicalPrices[creationDate] = currentPrice;
+        if (!existing) {
+          // First sync for this ticker - backfill from earliest creation date
+          const earliestDate = creationDates.sort()[0]; // Dates are already in YYYY-MM-DD format
+
+          // Fetch historical data from earliest idea creation to today
+          historicalPrices = await fetchHistoricalPrices(ticker, earliestDate, today);
+
+          // Ensure today's price is included
+          historicalPrices[today] = currentPrice;
+        } else {
+          // Existing ticker - append today's price only
+          historicalPrices = (existing.historical_prices as Record<string, number>) || {};
+
+          // Only add today's price if not already present
+          if (!historicalPrices[today]) {
+            historicalPrices[today] = currentPrice;
           }
         }
 

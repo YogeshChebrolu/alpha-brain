@@ -86,6 +86,7 @@ function SortableElement({
         <div
           {...attributes}
           {...listeners}
+          suppressHydrationWarning
           className="cursor-grab active:cursor-grabbing mt-1 hover:bg-neutral-100 rounded p-1"
         >
           <GripVertical className="w-5 h-5 text-neutral-400" />

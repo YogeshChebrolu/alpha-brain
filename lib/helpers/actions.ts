@@ -1,10 +1,12 @@
 import { createClient } from '@/lib/supabase/client';
+import { syncActionAlerts, getEnabledChannels } from './notifications';
 
 export type ActionInput = {
   id?: string;
   text: string;
   status: 'pending' | 'inprogress' | 'done' | 'skipped';
   due_time?: string;
+  notify?: boolean; // Whether to create alerts for this action
 };
 
 /**
@@ -36,6 +38,9 @@ export async function syncActionsToIdea(ideaId: string, actions: ActionInput[]) 
       await supabase.from('actions').delete().in('id', idsToDelete);
     }
 
+    // Get enabled channels for alerts
+    const enabledChannels = await getEnabledChannels();
+
     // Insert or update actions
     for (const action of actions) {
       if (action.id) {
@@ -49,14 +54,31 @@ export async function syncActionsToIdea(ideaId: string, actions: ActionInput[]) 
             updated_at: new Date().toISOString(),
           })
           .eq('id', action.id);
+
+        // Sync alerts if notify is enabled and there's a due_time
+        if (action.notify && action.due_time) {
+          await syncActionAlerts(action.id, action.due_time, enabledChannels);
+        } else if (!action.notify || !action.due_time) {
+          // Clear alerts if notify is disabled or no due_time
+          await syncActionAlerts(action.id, undefined, []);
+        }
       } else {
         // Insert new action
-        await supabase.from('actions').insert({
-          idea_id: ideaId,
-          text: action.text,
-          status: action.status,
-          due_time: action.due_time || null,
-        });
+        const { data: newAction } = await supabase
+          .from('actions')
+          .insert({
+            idea_id: ideaId,
+            text: action.text,
+            status: action.status,
+            due_time: action.due_time || null,
+          })
+          .select('id')
+          .single();
+
+        // Create alerts for new action if notify is enabled
+        if (newAction && action.notify && action.due_time) {
+          await syncActionAlerts(newAction.id, action.due_time, enabledChannels);
+        }
       }
     }
   } catch (err) {
@@ -80,14 +102,27 @@ export async function getIdeaActions(ideaId: string): Promise<ActionInput[]> {
 
     if (error) throw error;
 
-    return (
-      data?.map((action) => ({
-        id: action.id,
-        text: action.text,
-        status: action.status as 'pending' | 'inprogress' | 'done' | 'skipped',
-        due_time: action.due_time || undefined,
-      })) || []
-    );
+    if (!data || data.length === 0) return [];
+
+    // Get action IDs to check for alerts
+    const actionIds = data.map((a) => a.id);
+
+    // Check which actions have active alerts
+    const { data: alerts } = await supabase
+      .from('action_alerts')
+      .select('action_id')
+      .in('action_id', actionIds)
+      .eq('status', 'active');
+
+    const actionsWithAlerts = new Set(alerts?.map((a) => a.action_id) || []);
+
+    return data.map((action) => ({
+      id: action.id,
+      text: action.text,
+      status: action.status as 'pending' | 'inprogress' | 'done' | 'skipped',
+      due_time: action.due_time || undefined,
+      notify: actionsWithAlerts.has(action.id),
+    }));
   } catch (err) {
     console.error('Error fetching idea actions:', err);
     return [];

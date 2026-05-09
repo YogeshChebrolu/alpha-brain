@@ -32,7 +32,7 @@ export default function StockGraphElement({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<any>(null);
 
-  // Edit mode state - must be declared at top level to avoid hooks order issues
+  // Exchange-related state (for edit mode)
   const [exchange, setExchange] = useState<'US' | 'NSE'>('US');
   const [baseTicker, setBaseTicker] = useState('');
   const [exchangeMenuOpen, setExchangeMenuOpen] = useState(false);
@@ -45,6 +45,34 @@ export default function StockGraphElement({
       fetchStockData(ticker);
     }
   }, [ticker, mode, ideaCreatedAt]);
+
+  // Parse ticker on mount to separate base ticker and exchange (for edit mode)
+  useEffect(() => {
+    if (!ticker) return;
+
+    if (ticker.endsWith('.NS') || ticker.endsWith('.BO')) {
+      setBaseTicker(ticker.replace('.NS', '').replace('.BO', ''));
+      setExchange('NSE');
+    } else {
+      setBaseTicker(ticker);
+      setExchange('US');
+    }
+  }, [ticker]);
+
+  // Handle click outside for exchange menu (for edit mode)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        exchangeMenuRef.current &&
+        !exchangeMenuRef.current.contains(event.target as Node)
+      ) {
+        setExchangeMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   // Initialize chart when data is available
   useEffect(() => {
@@ -152,36 +180,6 @@ export default function StockGraphElement({
       }
     };
   }, [stockData, mode]);
-
-  // Parse ticker on mount to separate base ticker and exchange (edit mode only)
-  useEffect(() => {
-    if (mode === 'view' || !ticker) return;
-
-    if (ticker.endsWith('.NS') || ticker.endsWith('.BO')) {
-      setBaseTicker(ticker.replace('.NS', '').replace('.BO', ''));
-      setExchange('NSE');
-    } else {
-      setBaseTicker(ticker);
-      setExchange('US');
-    }
-  }, []);
-
-  // Handle click outside for exchange dropdown (edit mode only)
-  useEffect(() => {
-    if (mode === 'view') return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        exchangeMenuRef.current &&
-        !exchangeMenuRef.current.contains(event.target as Node)
-      ) {
-        setExchangeMenuOpen(false);
-      }
-    };
-
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
-  }, [mode]);
 
   const fetchStockData = async (symbol: string, autoSync = true) => {
     setLoading(true);
