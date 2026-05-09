@@ -164,6 +164,90 @@ export type Database = {
           },
         ]
       }
+      article_images: {
+        Row: {
+          article_id: string
+          created_at: string | null
+          id: string
+          resource_id: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string | null
+          id?: string
+          resource_id: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string | null
+          id?: string
+          resource_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_article_images_article"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_article_images_resource"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles: {
+        Row: {
+          banner_image_url: string | null
+          banner_storage_path: string | null
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          id: string
+          published_at: string | null
+          reading_time_minutes: number | null
+          slug: string
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          banner_image_url?: string | null
+          banner_storage_path?: string | null
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          banner_image_url?: string | null
+          banner_storage_path?: string | null
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           archived: boolean | null
@@ -434,6 +518,62 @@ export type Database = {
             columns: ["idea_id"]
             isOneToOne: false
             referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspirations: {
+        Row: {
+          article_id: string | null
+          banner_image_url: string | null
+          created_at: string | null
+          description: string
+          display_order: number | null
+          gradient: string | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          is_system: boolean | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          banner_image_url?: string | null
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          gradient?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          banner_image_url?: string | null
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          gradient?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_inspirations_article"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
             referencedColumns: ["id"]
           },
         ]

@@ -51,8 +51,8 @@ export const STOCK_THESIS_TEMPLATE: FormElementConfig[] = [
   },
   {
     id: 'ticker',
-    type: 'stock_ticker',
-    label: 'Stock Ticker',
+    type: 'stock_graph',
+    label: 'Stock Graph',
     placeholder: 'e.g., AAPL',
     required: true,
   },
