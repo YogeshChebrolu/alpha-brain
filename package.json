@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:tunnel": "concurrently \"bun run dev\" \"bunx ngrok http 3000\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -19,6 +20,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",
+    "inngest": "^4.2.6",
     "lightweight-charts": "^5.2.0",
     "lucide-react": "^1.8.0",
     "next": "16.2.4",
@@ -34,6 +36,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",

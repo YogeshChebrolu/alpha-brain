@@ -32,15 +32,23 @@ export default function IdeaDetailPage() {
 
   const loadIdea = async () => {
     try {
+      // Validate UUID format
+      const id = params.id as string;
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id)) {
+        router.push('/ideas');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('ideas')
         .select('*, categories (*, templates (*))')
-        .eq('id', params.id as string)
+        .eq('id', id)
         .single();
       if (error) throw error;
 
       // Fetch actions from the actions table
-      const actions = await getIdeaActions(params.id as string);
+      const actions = await getIdeaActions(id);
 
       // Merge actions into content_json for the form
       const ideaWithActions = {

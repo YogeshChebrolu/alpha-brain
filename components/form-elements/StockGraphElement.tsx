@@ -32,6 +32,12 @@ export default function StockGraphElement({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<any>(null);
 
+  // Exchange-related state (for edit mode)
+  const [exchange, setExchange] = useState<'US' | 'NSE'>('US');
+  const [baseTicker, setBaseTicker] = useState('');
+  const [exchangeMenuOpen, setExchangeMenuOpen] = useState(false);
+  const exchangeMenuRef = useRef<HTMLDivElement>(null);
+
   const ticker = value?.toUpperCase() || '';
 
   useEffect(() => {
@@ -39,6 +45,34 @@ export default function StockGraphElement({
       fetchStockData(ticker);
     }
   }, [ticker, mode, ideaCreatedAt]);
+
+  // Parse ticker on mount to separate base ticker and exchange (for edit mode)
+  useEffect(() => {
+    if (!ticker) return;
+
+    if (ticker.endsWith('.NS') || ticker.endsWith('.BO')) {
+      setBaseTicker(ticker.replace('.NS', '').replace('.BO', ''));
+      setExchange('NSE');
+    } else {
+      setBaseTicker(ticker);
+      setExchange('US');
+    }
+  }, [ticker]);
+
+  // Handle click outside for exchange menu (for edit mode)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        exchangeMenuRef.current &&
+        !exchangeMenuRef.current.contains(event.target as Node)
+      ) {
+        setExchangeMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   // Initialize chart when data is available
   useEffect(() => {
@@ -303,38 +337,6 @@ export default function StockGraphElement({
       </div>
     );
   }
-
-  const [exchange, setExchange] = useState<'US' | 'NSE'>('US');
-  const [baseTicker, setBaseTicker] = useState('');
-  const [exchangeMenuOpen, setExchangeMenuOpen] = useState(false);
-  const exchangeMenuRef = useRef<HTMLDivElement>(null);
-
-  // Parse ticker on mount to separate base ticker and exchange
-  useEffect(() => {
-    if (!ticker) return;
-
-    if (ticker.endsWith('.NS') || ticker.endsWith('.BO')) {
-      setBaseTicker(ticker.replace('.NS', '').replace('.BO', ''));
-      setExchange('NSE');
-    } else {
-      setBaseTicker(ticker);
-      setExchange('US');
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        exchangeMenuRef.current &&
-        !exchangeMenuRef.current.contains(event.target as Node)
-      ) {
-        setExchangeMenuOpen(false);
-      }
-    };
-
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
-  }, []);
 
   const handleTickerChange = (newTicker: string, newExchange: 'US' | 'NSE') => {
     const cleanTicker = newTicker.toUpperCase().trim();

@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brain, Home, Lightbulb, Zap, FolderOpen, LogOut } from 'lucide-react';
+import { Brain, Home, Lightbulb, Zap, FolderOpen, LogOut, Settings } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import NotificationCenter from '@/components/notifications/NotificationCenter';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
@@ -57,6 +58,22 @@ export default function Header() {
                 </Link>
               );
             })}
+
+            {/* Notification Center */}
+            <NotificationCenter />
+
+            {/* Settings */}
+            <Link
+              href="/settings"
+              className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+                pathname === '/settings'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
+              }`}
+              title="Settings"
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
 
             <button
               onClick={handleSignOut}

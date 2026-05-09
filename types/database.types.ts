@@ -20,27 +20,39 @@ export type Database = {
           alert_type: string
           channel: string
           cron_expression: string | null
+          error_message: string | null
           id: string
           next_run_at: string | null
+          reminder_minutes: number | null
+          sent_at: string | null
           status: string | null
+          user_id: string | null
         }
         Insert: {
           action_id: string
           alert_type: string
           channel: string
           cron_expression?: string | null
+          error_message?: string | null
           id?: string
           next_run_at?: string | null
+          reminder_minutes?: number | null
+          sent_at?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           action_id?: string
           alert_type?: string
           channel?: string
           cron_expression?: string | null
+          error_message?: string | null
           id?: string
           next_run_at?: string | null
+          reminder_minutes?: number | null
+          sent_at?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -55,17 +67,17 @@ export type Database = {
       action_attachments: {
         Row: {
           action_id: string
-          id: string
+          created_at: string | null
           resource_id: string
         }
         Insert: {
           action_id: string
-          id?: string
+          created_at?: string | null
           resource_id: string
         }
         Update: {
           action_id?: string
-          id?: string
+          created_at?: string | null
           resource_id?: string
         }
         Relationships: [
@@ -154,40 +166,40 @@ export type Database = {
       }
       categories: {
         Row: {
+          archived: boolean | null
+          archived_at: string | null
+          color: string
           created_at: string | null
+          gradient: string | null
           icon: string | null
           id: string
           name: string
           template_id: string | null
           user_id: string
-          color: string
-          gradient: string
-          archived: boolean
-          archived_at: string | null
         }
         Insert: {
+          archived?: boolean | null
+          archived_at?: string | null
+          color?: string
           created_at?: string | null
+          gradient?: string | null
           icon?: string | null
           id?: string
           name: string
           template_id?: string | null
           user_id: string
-          color?: string
-          gradient?: string
-          archived?: boolean
-          archived_at?: string | null
         }
         Update: {
+          archived?: boolean | null
+          archived_at?: string | null
+          color?: string
           created_at?: string | null
+          gradient?: string | null
           icon?: string | null
           id?: string
           name?: string
           template_id?: string | null
           user_id?: string
-          color?: string
-          gradient?: string
-          archived?: boolean
-          archived_at?: string | null
         }
         Relationships: [
           {
@@ -195,13 +207,6 @@ export type Database = {
             columns: ["template_id"]
             isOneToOne: false
             referencedRelation: "templates"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "categories_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -235,28 +240,40 @@ export type Database = {
           alert_type: string
           channel: string
           cron_expression: string | null
+          error_message: string | null
           id: string
           idea_id: string
           next_run_at: string | null
+          reminder_minutes: number | null
+          sent_at: string | null
           status: string | null
+          user_id: string | null
         }
         Insert: {
           alert_type: string
           channel: string
           cron_expression?: string | null
+          error_message?: string | null
           id?: string
           idea_id: string
           next_run_at?: string | null
+          reminder_minutes?: number | null
+          sent_at?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           alert_type?: string
           channel?: string
           cron_expression?: string | null
+          error_message?: string | null
           id?: string
           idea_id?: string
           next_run_at?: string | null
+          reminder_minutes?: number | null
+          sent_at?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -270,17 +287,17 @@ export type Database = {
       }
       idea_attachments: {
         Row: {
-          id: string
+          created_at: string | null
           idea_id: string
           resource_id: string
         }
         Insert: {
-          id?: string
+          created_at?: string | null
           idea_id: string
           resource_id: string
         }
         Update: {
-          id?: string
+          created_at?: string | null
           idea_id?: string
           resource_id?: string
         }
@@ -303,40 +320,43 @@ export type Database = {
       }
       ideas: {
         Row: {
+          archived: boolean | null
+          archived_at: string | null
           category_id: string | null
           content_json: Json | null
           created_at: string | null
+          due_date: string | null
           id: string
           parent_id: string | null
           title: string
           updated_at: string | null
           user_id: string
-          archived: boolean
-          archived_at: string | null
         }
         Insert: {
+          archived?: boolean | null
+          archived_at?: string | null
           category_id?: string | null
           content_json?: Json | null
           created_at?: string | null
+          due_date?: string | null
           id?: string
           parent_id?: string | null
           title: string
           updated_at?: string | null
           user_id: string
-          archived?: boolean
-          archived_at?: string | null
         }
         Update: {
+          archived?: boolean | null
+          archived_at?: string | null
           category_id?: string | null
           content_json?: Json | null
           created_at?: string | null
+          due_date?: string | null
           id?: string
           parent_id?: string | null
           title?: string
           updated_at?: string | null
           user_id?: string
-          archived?: boolean
-          archived_at?: string | null
         }
         Relationships: [
           {
@@ -353,49 +373,196 @@ export type Database = {
             referencedRelation: "ideas"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      in_app_notifications: {
+        Row: {
+          action_id: string | null
+          body: string | null
+          created_at: string | null
+          dismissed: boolean | null
+          dismissed_at: string | null
+          id: string
+          idea_id: string | null
+          link: string | null
+          read: boolean | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_id?: string | null
+          body?: string | null
+          created_at?: string | null
+          dismissed?: boolean | null
+          dismissed_at?: string | null
+          id?: string
+          idea_id?: string | null
+          link?: string | null
+          read?: boolean | null
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action_id?: string | null
+          body?: string | null
+          created_at?: string | null
+          dismissed?: boolean | null
+          dismissed_at?: string | null
+          id?: string
+          idea_id?: string | null
+          link?: string | null
+          read?: boolean | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: "ideas_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "in_app_notifications_action_id_fkey"
+            columns: ["action_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "actions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "in_app_notifications_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
             referencedColumns: ["id"]
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          created_at: string | null
+          default_reminder_minutes: number | null
+          id: string
+          in_app_enabled: boolean | null
+          phone_number: string | null
+          phone_verified: boolean | null
+          push_enabled: boolean | null
+          quiet_hours_enabled: boolean | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          sms_enabled: boolean | null
+          timezone: string | null
+          updated_at: string | null
+          user_id: string
+          whatsapp_enabled: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          default_reminder_minutes?: number | null
+          id?: string
+          in_app_enabled?: boolean | null
+          phone_number?: string | null
+          phone_verified?: boolean | null
+          push_enabled?: boolean | null
+          quiet_hours_enabled?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          sms_enabled?: boolean | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id: string
+          whatsapp_enabled?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          default_reminder_minutes?: number | null
+          id?: string
+          in_app_enabled?: boolean | null
+          phone_number?: string | null
+          phone_verified?: boolean | null
+          push_enabled?: boolean | null
+          quiet_hours_enabled?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          sms_enabled?: boolean | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id?: string
+          whatsapp_enabled?: boolean | null
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth_key: string
+          created_at: string | null
+          endpoint: string
+          id: string
+          last_used_at: string | null
+          p256dh_key: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth_key: string
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          last_used_at?: string | null
+          p256dh_key: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth_key?: string
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          last_used_at?: string | null
+          p256dh_key?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           created_at: string | null
+          file_name: string | null
+          file_size: number | null
           id: string
           metadata: Json | null
+          mime_type: string | null
+          storage_path: string | null
           type: string | null
           url: string
           user_id: string
         }
         Insert: {
           created_at?: string | null
+          file_name?: string | null
+          file_size?: number | null
           id?: string
           metadata?: Json | null
+          mime_type?: string | null
+          storage_path?: string | null
           type?: string | null
           url: string
           user_id: string
         }
         Update: {
           created_at?: string | null
+          file_name?: string | null
+          file_size?: number | null
           id?: string
           metadata?: Json | null
+          mime_type?: string | null
+          storage_path?: string | null
           type?: string | null
           url?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "resources_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       templates: {
         Row: {
@@ -421,32 +588,6 @@ export type Database = {
           is_system?: boolean | null
           name?: string
           user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "templates_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      users: {
-        Row: {
-          created_at: string | null
-          email: string
-          id: string
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          id?: string
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          id?: string
         }
         Relationships: []
       }
