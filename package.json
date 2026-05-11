@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:tunnel": "concurrently \"bun run dev\" \"bunx ngrok http 3000\"",
+    "dev:tunnel": "concurrently \"bun run dev\" \"ngrok http 3000\"",
     "dev:turbo": "next dev --turbo",
     "build": "next build",
     "start": "next start",
