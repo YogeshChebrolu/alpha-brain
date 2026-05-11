@@ -1,0 +1,390 @@
+PS C:\Users\Yogesh\Documents\projects\alpha-brain> bun run dev:all
+$ concurrently "bun run dev" "bun run dev:gateway"
+[0] $ next dev
+[1] $ cd gateway && bun run dev
+[1] $ tsx watch src/server.ts
+[0] ▲ Next.js 16.2.4 (Turbopack)
+[0] - Local:         http://localhost:3000
+[0] - Network:       http://192.168.1.10:3000
+[0] - Environments: .env.local, .env
+[0] ✓ Ready in 749ms
+[1] [2026-05-11 17:10:18.554 +0530] INFO: Connection manager created (call init() to initialize storage)
+[1] [2026-05-11 17:10:18.559 +0530] INFO: Starting WhatsApp Gateway
+[1]     authBasePath: "./.whatsapp-auth"
+[1] [2026-05-11 17:10:18.560 +0530] INFO: Connection manager initialized
+[1] [2026-05-11 17:10:18.560 +0530] INFO: Restoring connections from stored credentials
+[1] [2026-05-11 17:10:18.562 +0530] INFO: Found stored users
+[1]     count: 0
+[1] [2026-05-11 17:10:18.589 +0530] INFO: WhatsApp Gateway started
+[1]     host: "0.0.0.0"
+[1]     port: 3001
+[1] [2026-05-11 17:10:18.589 +0530] INFO: Health check: http://0.0.0.0:3001/health
+[1] [2026-05-11 17:10:18.589 +0530] INFO: WebSocket: ws://0.0.0.0:3001/ws?userId=<userId>
+[1] [2026-05-11 17:10:18.554 +0530] INFO: File auth storage initialized
+[1]     basePath: "./.whatsapp-auth"
+[0]
+[0]  GET /settings/whatsapp 200 in 1072ms (next.js: 728ms, application-code: 343ms)
+[0]  GET /api/notifications?limit=10&includeRead=true 200 in 1968ms (next.js: 118ms, application-code: 1850ms)
+[0]  GET /api/whatsapp/status 200 in 2.0s (next.js: 179ms, application-code: 1828ms)
+[0]  GET /api/notifications?countOnly=true 200 in 195ms (next.js: 4ms, application-code: 191ms)
+[1] [2026-05-11 17:10:44.964 +0530] INFO: Pairing request received
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     method: "qr_code"
+[1] [2026-05-11 17:10:44.965 +0530] INFO: Initiating pairing
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     method: "qr_code"
+[1] [2026-05-11 17:10:45.312 +0530] INFO: Creating WhatsApp socket
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     version: [
+[1]       2,
+[1]       3000,
+[1]       1035194821
+[1]     ]
+[0]  POST /api/whatsapp/initiate-pairing 200 in 1860ms (next.js: 92ms, application-code: 1767ms)
+[1] [2026-05-11 17:10:45.723 +0530] INFO: connected to WA
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     browser: [
+[1]       "Alpha Brain",
+[1]       "Web",
+[1]       "1.0.0"
+[1]     ]
+[1]     helloMsg: {
+[1]       "clientHello": {
+[1]         "ephemeral": "Mh12XECjE9bl7BHFYU3mkEJyqG1bZamR6iZksZZksjs="
+[1]       }
+[1]     }
+[1] [2026-05-11 17:10:45.957 +0530] INFO: not logged in, attempting registration...
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     node: {
+[1]       "passive": false,
+[1]       "userAgent": {
+[1]         "platform": "WEB",
+[1]         "appVersion": {
+[1]           "primary": 2,
+[1]           "secondary": 3000,
+[1]           "tertiary": 1035194821
+[1]         },
+[1]         "mcc": "000",
+[1]         "mnc": "000",
+[1]         "osVersion": "0.1",
+[1]         "device": "Desktop",
+[1]         "osBuildNumber": "0.1",
+[1]         "releaseChannel": "RELEASE",
+[1]         "localeLanguageIso6391": "en",
+[1]         "localeCountryIso31661Alpha2": "US"
+[1]       },
+[1]       "webInfo": {
+[1]         "webSubPlatform": "WEB_BROWSER"
+[1]       },
+[1]       "connectType": "WIFI_UNKNOWN",
+[1]       "connectReason": "USER_ACTIVATED",
+[1]       "devicePairingData": {
+[1]         "eRegid": "AAAACA==",
+[1]         "eKeytype": "BQ==",
+[1]         "eIdent": "9aX0GiYsvca1opNUPq1VvfjAapCh2YZF+d9Cm/vRKgQ=",
+[1]         "eSkeyId": "AAAB",
+[1]         "eSkeyVal": "/rPv4itJnMLx30ru7dtkqumeKu3HiCQmWmKvtuvtilw=",
+[1]         "eSkeySig": "obl16UYx3Aha5RcCLsJcjCGVWNcKIilXgSEbtTI0jc4wV23r/wHri90OXtx6AsbIXdkTUevDNSr1FDX/XwS5gQ==",
+[1]         "buildHash": "oslHHv+RCp4a5lmJCiiHLQ==",
+[1]         "deviceProps": "CgtBbHBoYSBCcmFpbhgHIAA="
+[1]       },
+[1]       "pull": false
+[1]     }
+[1] [2026-05-11 17:10:46.300 +0530] INFO: QR code received
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 1209ms (next.js: 1102ms, application-code: 107ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 154ms (next.js: 31ms, application-code: 122ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 108ms (next.js: 21ms, application-code: 87ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 159ms (next.js: 30ms, application-code: 129ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 119ms (next.js: 32ms, application-code: 87ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 168ms (next.js: 28ms, application-code: 140ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 124ms (next.js: 31ms, application-code: 93ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 160ms (next.js: 38ms, application-code: 122ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 121ms (next.js: 31ms, application-code: 90ms)
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 217ms (next.js: 31ms, application-code: 186ms)
+[1] [2026-05-11 17:11:05.907 +0530] INFO: pairing configured successfully, expect to restart the connection...
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     me: {
+[1]       "id": "916303258337:30@s.whatsapp.net"
+[1]     }
+[1]     platform: "android"
+[1] [2026-05-11 17:11:06.686 +0530] INFO: Scheduling reconnect
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     attempt: 1
+[1]     delayMs: 1546.4348444723078
+[1] [2026-05-11 17:11:06.682 +0530] ERROR: stream errored out
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     node: {
+[1]       "tag": "stream:error",
+[1]       "attrs": {
+[1]         "code": "515"
+[1]       }
+[1]     }
+[1] [2026-05-11 17:11:06.683 +0530] INFO: connection errored
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     trace: "Error: Stream Errored (restart required)\n    at WebSocketClient.<anonymous> (C:\Users\Yogesh\Documents\projects\alpha-brain\gateway\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:519:13)\n    at WebSocketClient.emit (node:events:508:28)\n    at C:\Users\Yogesh\Documents\projects\alpha-brain\gateway\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:236:35\n    at Object.decodeFrame (C:\Users\Yogesh\Documents\projects\alpha-brain\gateway\node_modules\@whiskeysockets\baileys\lib\Utils\noise-handler.js:144:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+[1] [2026-05-11 17:11:06.686 +0530] INFO: Connection closed
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     statusCode: 515
+[1]     reason: "restartRequired"
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 99ms (next.js: 21ms, application-code: 79ms)
+[1] [2026-05-11 17:11:08.239 +0530] INFO: Attempting reconnect
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:08.240 +0530] INFO: Cleaning up socket
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:08.309 +0530] INFO: Creating WhatsApp socket
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     version: [
+[1]       2,
+[1]       3000,
+[1]       1035194821
+[1]     ]
+[1] [2026-05-11 17:11:09.775 +0530] INFO: connected to WA
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     browser: [
+[1]       "Alpha Brain",
+[1]       "Web",
+[1]       "1.0.0"
+[1]     ]
+[1]     helloMsg: {
+[1]       "clientHello": {
+[1]         "ephemeral": "wBYYn7+Ch9vzJGJyegXOxHOg0MvGEesE7H5D7MUgdhU="
+[1]       }
+[1]     }
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 150ms (next.js: 21ms, application-code: 129ms)
+[1] [2026-05-11 17:11:10.053 +0530] INFO: logging in...
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     node: {
+[1]       "username": "916303258337",
+[1]       "passive": false,
+[1]       "userAgent": {
+[1]         "platform": "WEB",
+[1]         "appVersion": {
+[1]           "primary": 2,
+[1]           "secondary": 3000,
+[1]           "tertiary": 1035194821
+[1]         },
+[1]         "mcc": "000",
+[1]         "mnc": "000",
+[1]         "osVersion": "0.1",
+[1]         "device": "Desktop",
+[1]         "osBuildNumber": "0.1",
+[1]         "releaseChannel": "RELEASE",
+[1]         "localeLanguageIso6391": "en",
+[1]         "localeCountryIso31661Alpha2": "US"
+[1]       },
+[1]       "webInfo": {
+[1]         "webSubPlatform": "WEB_BROWSER"
+[1]       },
+[1]       "connectType": "WIFI_UNKNOWN",
+[1]       "connectReason": "USER_ACTIVATED",
+[1]       "device": 30,
+[1]       "pull": true
+[1]     }
+[1] [2026-05-11 17:11:10.809 +0530] INFO: handled 0 offline messages/notifications
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:10.885 +0530] INFO: 0 pre-keys found on server
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:10.886 +0530] INFO: uploading pre-keys
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     count: 30
+[1] [2026-05-11 17:11:11.226 +0530] INFO: uploaded pre-keys
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     count: 30
+[1] [2026-05-11 17:11:11.532 +0530] INFO: opened connection to WA
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:11.537 +0530] WARN: no name present, ignoring presence update request...
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:11.537 +0530] INFO: Connected to WhatsApp
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     phoneNumber: "916303258337"
+[1]     jid: "916303258337:30@s.whatsapp.net"
+[1] [2026-05-11 17:11:11.537 +0530] INFO: Pairing session marked as connected
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     sessionId: "af8e42f2-7f0b-43f4-98ed-0fcc61f83390"
+[0]  GET /api/whatsapp/pairing-status/af8e42f2-7f0b-43f4-98ed-0fcc61f83390 200 in 478ms (next.js: 17ms, application-code: 461ms)
+[0]  GET /api/whatsapp/status 200 in 190ms (next.js: 4ms, application-code: 186ms)
+[1] [2026-05-11 17:11:12.761 +0530] INFO: injecting new app state sync keys
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     newAppStateSyncKeyId: "AAAAADgk"
+[1]     newKeys: [
+[1]       "AAAAADgl",
+[1]       "AAAAADgj",
+[1]       "AAAAADgk"
+[1]     ]
+[1] [2026-05-11 17:11:17.822 +0530] INFO: doing initial app state sync
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:17.823 +0530] INFO: got history notification
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     histNotification: {
+[1]       "fileSha256": "eh+WaZPIhaVLvQYkTUwfxdaZFf9/wFlY+hoEYBA0WvE=",
+[1]       "fileLength": "10493",
+[1]       "mediaKey": "CuMUwOUVELimpxI+gZqFRjSokuszfSE4vR0dt7h+YP0=",
+[1]       "fileEncSha256": "HDUA5rDETFxr1okV3v0YQD6owzpyUORa8loXWqkZ+cg=",
+[1]       "directPath": "/v/t62.31111-24/695182782_1500991971774427_3719458626719619606_n.enc?ccb=11-4&oh=01_Q5Aa4gEnkRZKhvKYv8y0n47HlEPEQW8g0Il-H5eebpb7auYmNg&oe=6A292076&_nc_sid=5e03e0",
+[1]       "syncType": "INITIAL_STATUS_V3"
+[1]     }
+[1]     process: false
+[1]     id: "ACD84A83B5A1FE21C32AAD68C7838EA9"
+[1]     isLatest: true
+[1] [2026-05-11 17:11:17.823 +0530] INFO: resyncing critical_block from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:17.824 +0530] INFO: resyncing critical_unblock_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:17.824 +0530] INFO: resyncing regular_high from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:17.824 +0530] INFO: resyncing regular_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:17.825 +0530] INFO: resyncing regular from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.875 +0530] INFO: restored state of critical_block from snapshot to v1 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.880 +0530] INFO: synced critical_block to v3
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.938 +0530] INFO: restored state of critical_unblock_low from snapshot to v16 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.940 +0530] INFO: synced critical_unblock_low to v18
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.969 +0530] INFO: restored state of regular from snapshot to v46 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.971 +0530] INFO: synced regular to v48
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.988 +0530] INFO: restored state of regular_high from snapshot to v14 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:19.990 +0530] INFO: synced regular_high to v16
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:20.011 +0530] INFO: restored state of regular_low from snapshot to v96 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:20.013 +0530] INFO (regular_low): failed to sync state from version, removing and trying from scratch
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     error: "Error: tried remove, but no previous op\n    at Object.mix (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:58:27)\n    at decodeSyncdMutations (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:181:21)\n    at async decodeSyncdPatch (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:212:20)\n    at async decodePatches (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:319:30)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:393:70\n    at async Object.transaction (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\auth-utils.js:135:26)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:329:9\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\event-buffer.js:105:36\n    at async doAppStateSync (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:758:17)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:736:21"
+[1] [2026-05-11 17:11:20.013 +0530] INFO: resyncing regular_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:20.606 +0530] INFO: restored state of regular_low from snapshot to v96 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:20.609 +0530] INFO (regular_low): failed to sync state from version, removing and trying from scratch
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     error: "Error: tried remove, but no previous op\n    at Object.mix (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:58:27)\n    at decodeSyncdMutations (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:181:21)\n    at async decodeSyncdPatch (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:212:20)\n    at async decodePatches (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:319:30)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:393:70\n    at async Object.transaction (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\auth-utils.js:135:26)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:329:9\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\event-buffer.js:105:36\n    at async doAppStateSync (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:758:17)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:736:21"
+[1] [2026-05-11 17:11:20.609 +0530] INFO: resyncing regular_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:21.166 +0530] INFO: restored state of regular_low from snapshot to v96 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:21.168 +0530] INFO (regular_low): failed to sync state from version
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     error: "Error: tried remove, but no previous op\n    at Object.mix (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:58:27)\n    at decodeSyncdMutations (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:181:21)\n    at async decodeSyncdPatch (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:212:20)\n    at async decodePatches (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:319:30)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:393:70\n    at async Object.transaction (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\auth-utils.js:135:26)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:329:9\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\event-buffer.js:105:36\n    at async doAppStateSync (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:758:17)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:736:21"
+[1] [2026-05-11 17:11:21.181 +0530] INFO: archive setting updated => 'false'
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:21.184 +0530] INFO: got history notification
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     histNotification: {
+[1]       "fileSha256": "7Vv4iWRNTB0fsTzoFYFciKo76C01paiGtQiQhRkpMqo=",
+[1]       "fileLength": "263365",
+[1]       "mediaKey": "UiFnece6WcmSSQi73Rjlb7M+Hi27rp5t+iQoSlnXv8g=",
+[1]       "fileEncSha256": "/o0pVxQRAZu1ulCkAJYgTWKUZko25Bh0jFpIFe21nDE=",
+[1]       "directPath": "/v/t62.31111-24/589808652_873950855717398_1451372404006942801_n.enc?ccb=11-4&oh=01_Q5Aa4gGwOxqHixSlVl0RZexSDHEWpAsEaSpLJp6_swDXUhM4kw&oe=6A293F8C&_nc_sid=5e03e0",
+[1]       "syncType": "INITIAL_BOOTSTRAP"
+[1]     }
+[1]     process: true
+[1]     id: "AC9DC6EB675695C596E4C961D305B2E6"
+[1]     isLatest: true
+[1] [2026-05-11 17:11:21.888 +0530] INFO: resyncing regular_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:22.427 +0530] INFO: restored state of regular_low from snapshot to v96 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:22.431 +0530] INFO (regular_low): failed to sync state from version, removing and trying from scratch
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     error: "Error: tried remove, but no previous op\n    at Object.mix (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:58:27)\n    at decodeSyncdMutations (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:181:21)\n    at async decodeSyncdPatch (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:212:20)\n    at async decodePatches (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:319:30)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:393:70\n    at async Object.transaction (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\auth-utils.js:135:26)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:329:9\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\event-buffer.js:105:36\n    at async processNotification (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\messages-recv.js:318:21)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\messages-recv.js:577:33"
+[1] [2026-05-11 17:11:22.431 +0530] INFO: resyncing regular_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:22.965 +0530] INFO: restored state of regular_low from snapshot to v96 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:22.976 +0530] INFO (regular_low): failed to sync state from version, removing and trying from scratch
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     error: "Error: tried remove, but no previous op\n    at Object.mix (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:58:27)\n    at decodeSyncdMutations (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:181:21)\n    at async decodeSyncdPatch (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:212:20)\n    at async decodePatches (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:319:30)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:393:70\n    at async Object.transaction (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\auth-utils.js:135:26)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:329:9\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\event-buffer.js:105:36\n    at async processNotification (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\messages-recv.js:318:21)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\messages-recv.js:577:33"
+[1] [2026-05-11 17:11:22.976 +0530] INFO: resyncing regular_low from v0
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:23.511 +0530] INFO: restored state of regular_low from snapshot to v96 with mutations
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:23.514 +0530] INFO (regular_low): failed to sync state from version
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     error: "Error: tried remove, but no previous op\n    at Object.mix (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:58:27)\n    at decodeSyncdMutations (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:181:21)\n    at async decodeSyncdPatch (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:212:20)\n    at async decodePatches (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\chat-utils.js:319:30)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:393:70\n    at async Object.transaction (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\auth-utils.js:135:26)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\chats.js:329:9\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Utils\\event-buffer.js:105:36\n    at async processNotification (C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\messages-recv.js:318:21)\n    at async C:\\Users\\Yogesh\\Documents\\projects\\alpha-brain\\gateway\\node_modules\\@whiskeysockets\\baileys\\lib\\Socket\\messages-recv.js:577:33"
+[1] [2026-05-11 17:11:23.516 +0530] INFO: archive setting updated => 'false'
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1] [2026-05-11 17:11:23.520 +0530] INFO: got history notification
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     histNotification: {
+[1]       "fileSha256": "UFqp8ao7/4TfSkuQMMiJtuB1C7iP8c5c4z4bwYYyqBs=",
+[1]       "fileLength": "15540",
+[1]       "mediaKey": "r7IabKObCo2vA81eTu0FmTmhLAbvWZnjXSufwRUi/Oc=",
+[1]       "fileEncSha256": "YjqGUFKkSUENtpVLyDl8ZRjE0I1nD1GC5jIePatcvBQ=",
+[1]       "directPath": "/v/t62.31111-24/698297210_3484340808407646_2046353317382518616_n.enc?ccb=11-4&oh=01_Q5Aa4gE6w_ltbvIQgom9-9P7i-LDweHvtnTDdRpMaxmwUubcOQ&oe=6A293586&_nc_sid=5e03e0",
+[1]       "syncType": "NON_BLOCKING_DATA"
+[1]     }
+[1]     process: false
+[1]     id: "AC900C91B2FB95FDED333D8D96A72354"
+[1]     isLatest: false
+[1] [2026-05-11 17:11:23.524 +0530] INFO: got history notification
+[1]     module: "baileys"
+[1]     userId: "27a1c62d-98bb-490e-8b50-b252d5992e41"
+[1]     histNotification: {
+[1]       "fileSha256": "loUedau9l/XEkirBXACV7eLlMbt+es8EzLfak7LMmrI=",
+[1]       "fileLength": "34506",
+[1]       "mediaKey": "ylvLVFl5QYeHASZeG4Rv81MmA7HoM/XjED1aPEnZ3Ms=",
+[1]       "fileEncSha256": "gHJ13e9+lV2castZ1lCyUZ/uXtJZlv9IqCekmZ+yO4A=",
+[1]       "directPath": "/v/t62.31111-24/697609251_875074842269857_9022122372968057951_n.enc?ccb=11-4&oh=01_Q5Aa4gFeutm6CPqHDHJRyiQyhWMewu9nO-4f_r2BtdTuuw6MkA&oe=6A293A15&_nc_sid=5e03e0",
+[1]       "syncType": "PUSH_NAME",
+[1]       "chunkOrder": 1
+[1]     }
+[1]     process: true
+[1]     id: "AC4FB6CE4A808389A81876018D4A5C53"
+[1]     isLatest: false

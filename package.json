@@ -4,11 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:all": "concurrently \"bun run dev\" \"bun run dev:gateway\"",
+    "dev:gateway": "cd gateway && bun run dev",
     "dev:tunnel": "concurrently \"bun run dev\" \"ngrok http 3000\"",
     "dev:turbo": "next dev --turbo",
-    "build": "next build",
+    "build": "next build && cd gateway && bun run build",
+    "build:gateway": "cd gateway && bun run build",
     "start": "next start",
-    "lint": "eslint"
+    "start:gateway": "cd gateway && bun run start",
+    "start:all": "concurrently \"bun run start\" \"bun run start:gateway\"",
+    "lint": "eslint",
+    "gateway:install": "cd gateway && bun install"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

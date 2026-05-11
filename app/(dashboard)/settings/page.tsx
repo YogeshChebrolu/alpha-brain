@@ -13,7 +13,11 @@ import {
   AlertCircle,
   TrendingUp,
   RefreshCw,
+  ChevronRight,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react';
+import Link from 'next/link';
 import { NotificationPreferences, NotificationPreferencesInput } from '@/types/notification.types';
 
 /**
@@ -42,6 +46,11 @@ export default function SettingsPage() {
   const [syncProgress, setSyncProgress] = useState('');
   const [syncComplete, setSyncComplete] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+
+  // WhatsApp connection state
+  const [whatsappConnected, setWhatsappConnected] = useState(false);
+  const [whatsappPhone, setWhatsappPhone] = useState<string | null>(null);
+  const [whatsappLoading, setWhatsappLoading] = useState(true);
 
   // Fetch preferences on mount
   useEffect(() => {
@@ -91,8 +100,29 @@ export default function SettingsPage() {
       }
     }
 
+    async function fetchWhatsAppStatus() {
+      try {
+        setWhatsappLoading(true);
+        const res = await fetch('/api/whatsapp/status');
+        const data = await res.json();
+        if (data.success && data.connected) {
+          setWhatsappConnected(true);
+          setWhatsappPhone(data.phoneNumber || null);
+        } else {
+          setWhatsappConnected(false);
+          setWhatsappPhone(null);
+        }
+      } catch (err) {
+        console.error('Error fetching WhatsApp status:', err);
+        setWhatsappConnected(false);
+      } finally {
+        setWhatsappLoading(false);
+      }
+    }
+
     fetchPreferences();
     fetchLastSyncTime();
+    fetchWhatsAppStatus();
   }, []);
 
   const handleSyncAllStocks = async () => {
@@ -315,6 +345,44 @@ export default function SettingsPage() {
             </label>
           </div>
         </section>
+
+        {/* WhatsApp Integration */}
+        <Link href="/settings/whatsapp">
+          <section className="bg-white rounded-2xl border border-neutral-200 p-6 hover:border-green-300 hover:bg-green-50/30 transition-all cursor-pointer group">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-12 h-12 bg-[#25D366]/10 rounded-xl">
+                  <MessageSquare className="w-6 h-6 text-[#25D366]" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-neutral-900">WhatsApp Integration</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    {whatsappLoading ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-neutral-400" />
+                        <span className="text-xs text-neutral-500">Checking status...</span>
+                      </div>
+                    ) : whatsappConnected ? (
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span className="text-sm text-green-600 font-medium">Connected</span>
+                        {whatsappPhone && (
+                          <span className="text-xs text-neutral-500">• +{whatsappPhone}</span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <XCircle className="w-4 h-4 text-neutral-400" />
+                        <span className="text-sm text-neutral-500">Not connected</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-neutral-400 group-hover:text-neutral-600 transition-colors" />
+            </div>
+          </section>
+        </Link>
 
         {/* Phone Number */}
         <section className="bg-white rounded-2xl border border-neutral-200 p-6">
