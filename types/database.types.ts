@@ -594,7 +594,11 @@ export type Database = {
           timezone: string | null
           updated_at: string | null
           user_id: string
+          whatsapp_action_reminders: boolean | null
+          whatsapp_connected: boolean | null
+          whatsapp_daily_summary: boolean | null
           whatsapp_enabled: boolean | null
+          whatsapp_portfolio_updates: boolean | null
         }
         Insert: {
           created_at?: string | null
@@ -611,7 +615,11 @@ export type Database = {
           timezone?: string | null
           updated_at?: string | null
           user_id: string
+          whatsapp_action_reminders?: boolean | null
+          whatsapp_connected?: boolean | null
+          whatsapp_daily_summary?: boolean | null
           whatsapp_enabled?: boolean | null
+          whatsapp_portfolio_updates?: boolean | null
         }
         Update: {
           created_at?: string | null
@@ -628,7 +636,11 @@ export type Database = {
           timezone?: string | null
           updated_at?: string | null
           user_id?: string
+          whatsapp_action_reminders?: boolean | null
+          whatsapp_connected?: boolean | null
+          whatsapp_daily_summary?: boolean | null
           whatsapp_enabled?: boolean | null
+          whatsapp_portfolio_updates?: boolean | null
         }
         Relationships: []
       }
@@ -730,6 +742,173 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      whatsapp_connections: {
+        Row: {
+          connection_metadata: Json | null
+          created_at: string | null
+          device_info: Json | null
+          error_count: number | null
+          id: string
+          jid: string | null
+          last_connected_at: string | null
+          last_disconnected_at: string | null
+          last_error: string | null
+          pairing_method: string | null
+          pairing_session_id: string | null
+          phone_number: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          connection_metadata?: Json | null
+          created_at?: string | null
+          device_info?: Json | null
+          error_count?: number | null
+          id?: string
+          jid?: string | null
+          last_connected_at?: string | null
+          last_disconnected_at?: string | null
+          last_error?: string | null
+          pairing_method?: string | null
+          pairing_session_id?: string | null
+          phone_number?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          connection_metadata?: Json | null
+          created_at?: string | null
+          device_info?: Json | null
+          error_count?: number | null
+          id?: string
+          jid?: string | null
+          last_connected_at?: string | null
+          last_disconnected_at?: string | null
+          last_error?: string | null
+          pairing_method?: string | null
+          pairing_session_id?: string | null
+          phone_number?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_credentials: {
+        Row: {
+          created_at: string | null
+          creds_version: number | null
+          encrypted_creds: Json | null
+          encrypted_keys: Json | null
+          id: string
+          key_count: number | null
+          last_restored_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          creds_version?: number | null
+          encrypted_creds?: Json | null
+          encrypted_keys?: Json | null
+          id?: string
+          key_count?: number | null
+          last_restored_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          creds_version?: number | null
+          encrypted_creds?: Json | null
+          encrypted_keys?: Json | null
+          id?: string
+          key_count?: number | null
+          last_restored_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_messages: {
+        Row: {
+          body: string | null
+          created_at: string | null
+          direction: string
+          from_number: string | null
+          group_id: string | null
+          group_name: string | null
+          id: string
+          is_group: boolean | null
+          media_mimetype: string | null
+          media_url: string | null
+          message_id: string
+          message_timestamp: string
+          message_type: string
+          processed: boolean | null
+          processing_error: string | null
+          received_at: string | null
+          remote_jid: string
+          sender_name: string | null
+          to_number: string | null
+          whatsapp_connection_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string | null
+          direction: string
+          from_number?: string | null
+          group_id?: string | null
+          group_name?: string | null
+          id?: string
+          is_group?: boolean | null
+          media_mimetype?: string | null
+          media_url?: string | null
+          message_id: string
+          message_timestamp: string
+          message_type?: string
+          processed?: boolean | null
+          processing_error?: string | null
+          received_at?: string | null
+          remote_jid: string
+          sender_name?: string | null
+          to_number?: string | null
+          whatsapp_connection_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string | null
+          direction?: string
+          from_number?: string | null
+          group_id?: string | null
+          group_name?: string | null
+          id?: string
+          is_group?: boolean | null
+          media_mimetype?: string | null
+          media_url?: string | null
+          message_id?: string
+          message_timestamp?: string
+          message_type?: string
+          processed?: boolean | null
+          processing_error?: string | null
+          received_at?: string | null
+          remote_jid?: string
+          sender_name?: string | null
+          to_number?: string | null
+          whatsapp_connection_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_messages_whatsapp_connection_id_fkey"
+            columns: ["whatsapp_connection_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_connections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

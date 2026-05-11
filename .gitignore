@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# WhatsApp auth credentials (NEVER commit these!)
+.whatsapp-auth/
+gateway/.whatsapp-auth/
+
+# Gateway build output
+gateway/dist/
+gateway/node_modules/
