@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { fetchHistoricalPrices, fetchCurrentPrice } from '@/lib/helpers/yahoo-finance';
 
+/** Shape of a single field inside a template's `form_structure` JSON. */
+interface TemplateField {
+  id: string;
+  type: string;
+}
+
 /**
  * Manual Stock Sync API Route
  *
@@ -15,7 +21,7 @@ export async function POST() {
     // Get all ideas (simplified query for debugging)
     const { data: ideas, error: ideasError } = await supabase
       .from('ideas')
-      .select('content_json, created_at');
+      .select('content_json, created_at, categories(templates(form_structure))');
 
     if (ideasError) {
       throw new Error(`Failed to fetch ideas: ${ideasError.message}`);
@@ -24,12 +30,14 @@ export async function POST() {
     // Extract unique tickers by scanning content_json values
     const tickersMap = new Map<string, string[]>();
 
-    ideas?.forEach((idea: any) => {
-      const contentJson = idea.content_json as Record<string, any> | null;
+    ideas?.forEach((idea) => {
+      const contentJson = idea.content_json as Record<string, unknown> | null;
       if (!contentJson) return;
 
       // Get template form structure to find stock_graph fields
-      const formStructure = idea.categories?.templates?.form_structure as any[];
+      const formStructure = idea.categories?.templates?.form_structure as
+        | TemplateField[]
+        | undefined;
 
       if (formStructure) {
         const stockGraphFields = formStructure.filter(field => field.type === 'stock_graph');
@@ -78,7 +86,7 @@ export async function POST() {
             hasContentJson: !!ideas[0].content_json,
             contentJsonKeys: ideas[0].content_json ? Object.keys(ideas[0].content_json) : [],
             hasCategories: !!ideas[0].categories,
-            hasTemplates: !!(ideas[0] as any).categories?.templates,
+            hasTemplates: !!ideas[0].categories?.templates,
           } : null,
         },
         results: []

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,7 +22,7 @@ type Category = Tables<'categories'> & {
  * 1. Category selection
  * 2. Dynamic form based on template
  */
-export default function NewIdeaPage() {
+function NewIdeaForm() {
   const [step, setStep] = useState<'category' | 'form'>('category');
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -291,5 +291,26 @@ export default function NewIdeaPage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+/**
+ * Wraps the form in a Suspense boundary because `useSearchParams()` requires
+ * one for static prerendering (Next.js build fails otherwise).
+ */
+export default function NewIdeaPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-neutral-400" />
+            <p className="text-sm text-neutral-500">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <NewIdeaForm />
+    </Suspense>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { JSONContent } from 'novel';
+import type { JSONContent } from '@tiptap/react';
 
 interface ArticleRendererProps {
   content: string; // JSON stringified TipTap content
