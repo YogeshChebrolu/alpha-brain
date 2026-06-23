@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Brain, Mail, Lock, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getSafeRedirect } from '@/lib/helpers/redirect';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -52,7 +53,7 @@ export default function SignupPage() {
       }
 
       // Successfully signed up and logged in
-      router.push('/');
+      router.push(getSafeRedirect());
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to sign up');
