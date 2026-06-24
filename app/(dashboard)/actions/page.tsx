@@ -13,9 +13,10 @@ export default async function ActionsPage() {
   // Fetch all actions with their related ideas
   const { data: actions } = await supabase
     .from('actions')
-    .select('*, ideas(id, title)')
+    .select('id, text, status, due_time, idea_id, ideas(id, title)')
     .order('status', { ascending: true })
-    .order('due_time', { ascending: true });
+    .order('due_time', { ascending: true })
+    .limit(200);
 
   // Group actions by status
   const pendingActions = actions?.filter((a) => a.status === 'pending') || [];

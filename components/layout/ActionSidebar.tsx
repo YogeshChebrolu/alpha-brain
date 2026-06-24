@@ -3,12 +3,17 @@ import { Clock, CheckCircle2, Circle, Zap, AlertCircle, Calendar, ArrowRight, Ta
 import Link from 'next/link';
 import { Tables } from '@/types/database.types';
 
-type Action = Tables<'actions'> & {
+// Only the columns the sidebar actually renders — lets callers pass a trimmed
+// `select(...)` result without widening it back to the full row type.
+export type ActionSidebarItem = Pick<
+  Tables<'actions'>,
+  'id' | 'text' | 'status' | 'due_time' | 'idea_id'
+> & {
   ideas?: { title: string } | null;
 };
 
 interface Props {
-  actions: Action[];
+  actions: ActionSidebarItem[];
 }
 
 function getStatusConfig(status: string | null) {

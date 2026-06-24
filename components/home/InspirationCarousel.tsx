@@ -69,12 +69,34 @@ export default function InspirationCarousel({ inspirations }: InspirationCarouse
   // Use provided inspirations or fallback
   const cards = inspirations && inspirations.length > 0 ? inspirations : FALLBACK_CARDS;
 
-  // Auto-advance every 5 seconds
+  // Auto-advance every 5 seconds, but only while the tab is visible — no point
+  // animating slides (or re-rendering) for a backgrounded page.
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % cards.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    if (cards.length <= 1) return;
+
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    const start = () => {
+      timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % cards.length);
+      }, 5000);
+    };
+    const stop = () => {
+      if (timer) clearInterval(timer);
+      timer = undefined;
+    };
+    const onVisibility = () => {
+      stop();
+      if (document.visibilityState === 'visible') start();
+    };
+
+    if (document.visibilityState === 'visible') start();
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      stop();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [cards.length]);
 
   const goToSlide = (index: number) => {

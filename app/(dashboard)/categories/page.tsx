@@ -8,9 +8,10 @@ export default async function CategoriesPage() {
 
   const { data: categories } = await supabase
     .from('categories')
-    .select('*, templates(*)')
+    .select('id, name, color, gradient, templates(form_structure)')
     .eq('archived', false)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   return (
     <div className="max-w-6xl mx-auto">

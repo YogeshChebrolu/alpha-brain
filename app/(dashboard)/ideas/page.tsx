@@ -14,7 +14,8 @@ export default async function IdeasPage() {
     .from('ideas')
     .select('*, categories(name, color, gradient)')
     .eq('archived', false)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   return (
     <div className="max-w-6xl mx-auto">

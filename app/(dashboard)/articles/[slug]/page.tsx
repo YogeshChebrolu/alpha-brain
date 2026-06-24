@@ -1,64 +1,26 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { ArrowLeft, Edit, Clock, Calendar, Trash2 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { ArrowLeft, Clock, Calendar } from 'lucide-react';
+import { createClient } from '@/lib/supabase/server';
 import ArticleRenderer from '@/components/articles/ArticleRenderer';
-import { deleteArticle } from '@/lib/helpers/articles';
+import ArticleActions from '@/components/articles/ArticleActions';
 import type { Article } from '@/types/article.types';
 
-export default function ArticleViewPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params.slug as string;
+export default async function ArticleViewPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const supabase = await createClient();
 
-  const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState(false);
-  const supabase = createClient();
+  const { data } = await supabase
+    .from('articles')
+    .select('*')
+    .eq('slug', slug)
+    .single();
 
-  useEffect(() => {
-    async function fetchArticle() {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-
-      if (!error && data) {
-        setArticle(data as Article);
-      }
-      setLoading(false);
-    }
-
-    fetchArticle();
-  }, [slug]);
-
-  const handleDelete = async () => {
-    if (!article) return;
-    if (!confirm('Are you sure you want to delete this article?')) return;
-
-    setDeleting(true);
-    try {
-      await deleteArticle(article.id);
-      router.push('/articles');
-    } catch (err) {
-      console.error('Delete error:', err);
-      alert('Failed to delete article');
-      setDeleting(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin" />
-      </div>
-    );
-  }
+  const article = data as Article | null;
 
   if (!article) {
     return (
@@ -93,23 +55,7 @@ export default function ArticleViewPage() {
             <span className="text-sm font-medium">All Articles</span>
           </Link>
 
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/articles/${slug}/edit`}
-              className="inline-flex items-center gap-2 px-3 py-1.5 border border-neutral-200 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors"
-            >
-              <Edit className="w-4 h-4" />
-              Edit
-            </Link>
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="inline-flex items-center gap-2 px-3 py-1.5 border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete
-            </button>
-          </div>
+          <ArticleActions articleId={article.id} slug={slug} />
         </div>
       </div>
 

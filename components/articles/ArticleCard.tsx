@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Clock, FileText, ChevronRight } from 'lucide-react';

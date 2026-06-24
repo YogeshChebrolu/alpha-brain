@@ -7,47 +7,45 @@ import { Plus, FolderPlus } from 'lucide-react';
 export default async function HomePage() {
   const supabase = await createClient();
 
-  // Fetch inspirations with linked articles (latest 5)
-  let inspirations = null;
-  try {
-    const { data } = await supabase
-      .from('inspirations')
-      .select(`
-        *,
-        article:articles (
-          slug,
-          title,
-          banner_image_url
+  // These four reads are independent, so fire them together instead of
+  // awaiting one after another (was a 4-deep request waterfall).
+  const [inspirationsRes, actionsRes, ideasCountRes, categoriesRes] =
+    await Promise.all([
+      // Inspirations with linked articles (latest 5)
+      supabase
+        .from('inspirations')
+        .select(
+          `*, article:articles ( slug, title, banner_image_url )`
         )
-      `)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(5);
-    inspirations = data;
-  } catch {
-    // Table might not exist yet, use fallback
-  }
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(5),
+      // Pending actions with related idea (only the columns ActionSidebar uses)
+      supabase
+        .from('actions')
+        .select('id, text, status, due_time, idea_id, ideas(title)')
+        .eq('status', 'pending')
+        .order('due_time', { ascending: true })
+        .limit(5),
+      // Count of non-archived ideas
+      supabase
+        .from('ideas')
+        .select('*', { count: 'exact', head: true })
+        .eq('archived', false),
+      // Categories (only the columns the grid renders)
+      supabase
+        .from('categories')
+        .select('id, name, color')
+        .eq('archived', false)
+        .limit(4),
+    ]);
 
-  // Fetch pending actions with related idea
-  const { data: actions } = await supabase
-    .from('actions')
-    .select('*, ideas(title)')
-    .eq('status', 'pending')
-    .order('due_time', { ascending: true })
-    .limit(5);
-
-  // Fetch recent ideas count (exclude archived)
-  const { count: ideasCount } = await supabase
-    .from('ideas')
-    .select('*', { count: 'exact', head: true })
-    .eq('archived', false);
-
-  // Fetch categories (exclude archived)
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('archived', false)
-    .limit(4);
+  // A missing `inspirations` table surfaces as an error, not a throw — fall
+  // back to undefined so the carousel shows its built-in cards.
+  const inspirations = inspirationsRes.data;
+  const actions = actionsRes.data;
+  const ideasCount = ideasCountRes.count;
+  const categories = categoriesRes.data;
 
   return (
     <div className="space-y-8">
