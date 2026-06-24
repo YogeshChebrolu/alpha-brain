@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brain, Home, Lightbulb, Zap, FolderOpen, LogOut, Settings } from 'lucide-react';
+import { Brain, Home, Lightbulb, Zap, FolderOpen, FileText, LogOut, Settings } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import NotificationCenter from '@/components/notifications/NotificationCenter';
@@ -10,6 +10,7 @@ import NotificationCenter from '@/components/notifications/NotificationCenter';
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/ideas', label: 'Ideas', icon: Lightbulb },
+  { href: '/articles', label: 'Articles', icon: FileText },
   { href: '/categories', label: 'Categories', icon: FolderOpen },
   { href: '/actions', label: 'Actions', icon: Zap },
 ];
