@@ -69,8 +69,24 @@ export default function OnboardingModal() {
 
         <p className="text-neutral-700 whitespace-pre-wrap leading-relaxed min-h-[9rem]">
           {typed}
-          <span className="inline-block w-0.5 h-5 bg-neutral-900 ml-0.5 align-middle animate-pulse" />
+          <span className="ab-blink inline-block w-[0.55em] h-[1.15em] bg-neutral-900 ml-0.5 -mb-[0.15em] align-baseline" />
         </p>
+
+        <style jsx>{`
+          @keyframes ab-blink {
+            0%,
+            49% {
+              opacity: 1;
+            }
+            50%,
+            100% {
+              opacity: 0;
+            }
+          }
+          .ab-blink {
+            animation: ab-blink 1s steps(1) infinite;
+          }
+        `}</style>
 
         <div className="flex items-center justify-between gap-3 mt-6">
           <button

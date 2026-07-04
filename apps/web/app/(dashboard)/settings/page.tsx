@@ -110,22 +110,22 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
-        <p className="text-neutral-500 mt-1">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900">Settings</h1>
+        <p className="text-sm text-neutral-500 mt-1">
           Manage your workspace
         </p>
       </div>
 
       <div className="space-y-8">
         {/* Stock Data Sync */}
-        <section className="bg-white rounded-2xl border border-neutral-200 p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center justify-center w-10 h-10 bg-green-50 rounded-xl">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+        <section className="bg-white rounded-2xl border border-neutral-200 p-5 sm:p-6">
+          <div className="flex items-center gap-3 mb-5 sm:mb-6">
+            <div className="flex shrink-0 items-center justify-center w-9 h-9 sm:w-10 sm:h-10 bg-green-50 rounded-xl">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-neutral-900">Stock Data Sync</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-neutral-900">Stock Data Sync</h2>
               <p className="text-xs text-neutral-500">Update stock prices for all ideas</p>
             </div>
           </div>
@@ -139,21 +139,21 @@ export default function SettingsPage() {
             <button
               onClick={handleSyncAllStocks}
               disabled={syncing}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 text-sm bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
             >
               {syncing ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   {syncProgress || 'Syncing...'}
                 </>
               ) : syncComplete ? (
                 <>
-                  <Check className="w-5 h-5" />
+                  <Check className="w-4 h-4" />
                   Sync Complete!
                 </>
               ) : (
                 <>
-                  <RefreshCw className="w-5 h-5" />
+                  <RefreshCw className="w-4 h-4" />
                   Sync All Stocks
                 </>
               )}

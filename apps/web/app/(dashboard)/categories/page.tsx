@@ -11,16 +11,16 @@ export default function CategoriesPage() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-neutral-900">Categories</h1>
-          <p className="text-neutral-500 mt-1">
+      <div className="flex items-start justify-between gap-3 mb-6 sm:mb-8">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900">Categories</h1>
+          <p className="text-sm text-neutral-500 mt-1">
             Manage your idea templates and categories
           </p>
         </div>
         <Link
           href="/categories/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
+          className="inline-flex shrink-0 items-center gap-1.5 px-3 py-2 text-sm bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
           New Category
@@ -50,10 +50,10 @@ export default function CategoriesPage() {
                 />
 
                 {/* Content */}
-                <div className="p-6 pl-8">
+                <div className="p-5 pl-7 sm:p-6 sm:pl-8">
                   {/* Category info — click to view this category's ideas */}
                   <Link href={`/ideas?category=${category._id}`} className="block mb-4 group/info">
-                    <h3 className="font-bold text-neutral-900 text-xl mb-1 group-hover/info:underline">
+                    <h3 className="font-bold text-neutral-900 text-lg sm:text-xl mb-1 group-hover/info:underline">
                       {category.name}
                     </h3>
                     <p className="text-sm text-neutral-500">
@@ -65,13 +65,13 @@ export default function CategoriesPage() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/ideas?category=${category._id}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white/70 transition-all hover:bg-white"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white/70 transition-all hover:bg-white"
                     >
                       View Ideas
                     </Link>
                     <Link
                       href={`/ideas/new?category=${category._id}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:opacity-90"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all hover:opacity-90"
                       style={{
                         backgroundColor: color,
                         color: 'white'

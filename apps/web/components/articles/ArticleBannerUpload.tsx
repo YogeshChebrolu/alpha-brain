@@ -185,7 +185,7 @@ export default function ArticleBannerUpload({
         <button
           type="button"
           onClick={handleUrlApply}
-          className="inline-flex items-center gap-1.5 px-3 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
+          className="inline-flex shrink-0 items-center gap-1.5 px-3 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors whitespace-nowrap"
         >
           <Upload className="w-4 h-4" />
           Use URL
