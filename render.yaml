@@ -1,0 +1,25 @@
+# Render Blueprint — deploys apps/api (Hono on Bun) as a persistent Web Service.
+# A Web Service is a long-running server (not serverless), so there's no
+# per-request timeout to cut off SSE streams. Reuses the repo-root Dockerfile.
+#
+# Render injects PORT at runtime; the server reads process.env.PORT, so don't
+# set it here. Secret values (sync: false) are entered in the Render dashboard.
+services:
+  - type: web
+    name: alpha-brain-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free # free spins down after ~15m idle (cold start ~30-60s). Use "starter" to stay warm.
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      # Live Convex deployment URL (e.g. https://handsome-panda-622.convex.cloud)
+      - key: CONVEX_URL
+        sync: false
+      # OpenRouter key powering the agent (packages/agent)
+      - key: OPENROUTER_API_KEY
+        sync: false
+      # Comma-separated allowed CORS origins — set to your Vercel web URL
+      - key: WEB_ORIGIN
+        sync: false

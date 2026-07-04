@@ -1,0 +1,26 @@
+{
+  "name": "@alpha-brain/convex",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./convex/_generated/api": "./convex/_generated/api.js",
+    "./convex/_generated/dataModel": "./convex/_generated/dataModel.d.ts"
+  },
+  "scripts": {
+    "dev": "convex dev",
+    "codegen": "convex codegen",
+    "deploy": "convex deploy",
+    "setup:auth": "bunx @convex-dev/auth"
+  },
+  "dependencies": {
+    "@auth/core": "0.41.1",
+    "@convex-dev/auth": "0.0.94",
+    "@oslojs/crypto": "^1.0.1",
+    "convex": "1.42.0",
+    "resend": "^6.16.0"
+  }
+}
