@@ -107,9 +107,12 @@ export default defineSchema({
     ),
     publishedAt: v.optional(v.number()),
     readingTimeMinutes: v.optional(v.number()),
+    isPublic: v.optional(v.boolean()),
+    shareToken: v.optional(v.string()),
   })
     .index("by_user", ["userId"])
-    .index("by_slug", ["slug"]),
+    .index("by_slug", ["slug"])
+    .index("by_shareToken", ["shareToken"]),
 
   // Curated inspiration cards; may be system-seeded (userId absent) or user-owned.
   inspirations: defineTable({

@@ -57,7 +57,12 @@ export default function ArticleViewPage() {
             <span className="text-sm font-medium">All Articles</span>
           </Link>
 
-          <ArticleActions articleId={article._id} slug={slug} />
+          <ArticleActions
+            articleId={article._id}
+            slug={slug}
+            isPublic={article.isPublic}
+            shareToken={article.shareToken}
+          />
         </div>
       </div>
 

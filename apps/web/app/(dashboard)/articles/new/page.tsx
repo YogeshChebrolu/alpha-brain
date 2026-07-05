@@ -11,6 +11,26 @@ import ArticleBannerUpload from '@/components/articles/ArticleBannerUpload';
 import InspirationManager, { type InspirationData } from '@/components/articles/InspirationManager';
 import { generateSlug, calculateReadingTime } from '@/lib/helpers/articles';
 
+// Pre-fill a few empty paragraphs so the editor box doesn't look like an
+// empty white/black sliver before the user starts typing.
+const EMPTY_STARTER_BLOCKS = Array.from({ length: 8 }, () => ({
+  type: 'paragraph' as const,
+}));
+
+// Drop trailing empty paragraphs the starter content left behind so drafts
+// don't get saved full of blank lines.
+function stripTrailingEmptyBlocks(blocks: any[]): any[] {
+  const isEmptyParagraph = (block: any) =>
+    block.type === 'paragraph' &&
+    (!block.content || block.content.length === 0);
+
+  let end = blocks.length;
+  while (end > 0 && isEmptyParagraph(blocks[end - 1])) {
+    end--;
+  }
+  return blocks.slice(0, end);
+}
+
 export default function NewArticlePage() {
   const router = useRouter();
   const createArticle = useMutation(api.articles.create);
@@ -39,7 +59,8 @@ export default function NewArticlePage() {
     try {
       // Unique-ish slug: backend has no uniqueness check, so append a short suffix.
       const slug = `${generateSlug(title)}-${Math.random().toString(36).slice(2, 8)}`;
-      const contentStr = content ? JSON.stringify(content) : '{}';
+      const trimmedContent = content ? stripTrailingEmptyBlocks(content) : content;
+      const contentStr = trimmedContent ? JSON.stringify(trimmedContent) : '{}';
 
       const articleId = await createArticle({
         title: title.trim(),
@@ -134,6 +155,7 @@ export default function NewArticlePage() {
         {/* Content Editor */}
         <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
           <ArticleEditor
+            initialContent={EMPTY_STARTER_BLOCKS}
             onChange={setContent}
             placeholder="Start writing your article... Use '/' for commands"
           />

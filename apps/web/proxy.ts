@@ -11,8 +11,12 @@ import {
  * the guard and reach the app — the demo banner is shown in the dashboard chrome.
  */
 const isAuthPage = createRouteMatcher(['/login', '/signup']);
+// Publicly shared article links — must stay viewable without signing in.
+const isPublicPage = createRouteMatcher(['/share/(.*)']);
 
 export const proxy = convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  if (isPublicPage(request)) return;
+
   const authed = await convexAuth.isAuthenticated();
 
   // Signed-in user sitting on an auth page → home.
