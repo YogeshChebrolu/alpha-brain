@@ -1,19 +1,20 @@
 'use client';
 
-import { FormElementProps } from '@/types/form-element.types';
+import type { FormElementProps } from '@/types/form-element.types';
+import type { IChartApi } from 'lightweight-charts';
 import { TrendingUp, TrendingDown, Loader2, Calendar, ChevronDown } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useAction } from 'convex/react';
 import { api } from '@alpha-brain/convex';
 
 type HistoricalPoint = { date: string; close: number };
 
 const stripExchangeSuffixes = (value: string) =>
-  value.toUpperCase().trim().replace(/(\\.(NS|BO))+$/i, '');
+  value.toUpperCase().trim().replace(/(\.(NS|BO))+$/i, '');
 
 const normalizeTickerForExchange = (value: string, exchange: 'US' | 'NSE') => {
   const cleanTicker = stripExchangeSuffixes(value);
-  return exchange === 'NSE' && cleanTicker ? ${cleanTicker}.NS : cleanTicker;
+  return exchange === 'NSE' && cleanTicker ? `${cleanTicker}.NS` : cleanTicker;
 };
 
 /**
@@ -29,7 +30,7 @@ export default function StockGraphElement({
   ideaCreatedAt,
 }: FormElementProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const chartInstanceRef = useRef<any>(null);
+  const chartInstanceRef = useRef<IChartApi | null>(null);
 
   // Exchange-related state (for edit mode)
   const [exchange, setExchange] = useState<'US' | 'NSE'>('US');
@@ -97,24 +98,33 @@ export default function StockGraphElement({
       : null;
 
   // Normalize the historicalPrices map ({date: price}) into a sorted array
-  const historicalPrices: HistoricalPoint[] = stockDoc?.historicalPrices
-    ? Object.entries(stockDoc.historicalPrices)
-        .map(([date, close]) => ({ date, close: close as number }))
-        .sort((a, b) => a.date.localeCompare(b.date))
-    : [];
+  const historicalPrices: HistoricalPoint[] = useMemo(
+    () =>
+      stockDoc?.historicalPrices
+        ? Object.entries(stockDoc.historicalPrices)
+            .map(([date, close]) => ({ date, close: close as number }))
+            .sort((a, b) => a.date.localeCompare(b.date))
+        : [],
+    [stockDoc],
+  );
 
-  const stockData = stockDoc
-    ? {
-        closePrice: stockDoc.closePrice,
-        changePct: stockDoc.changePct,
-        historicalPrices,
-        growthSinceCreation: stockDoc.growthSinceCreation,
-        daysSinceCreation: stockDoc.daysSinceCreation,
-        lastSyncedAt: stockDoc.lastSyncedAt,
-      }
-    : null;
+  const stockData = useMemo(
+    () =>
+      stockDoc
+        ? {
+            closePrice: stockDoc.closePrice,
+            changePct: stockDoc.changePct,
+            historicalPrices,
+            growthSinceCreation: stockDoc.growthSinceCreation,
+            daysSinceCreation: stockDoc.daysSinceCreation,
+            lastSyncedAt: stockDoc.lastSyncedAt,
+          }
+        : null,
+    [historicalPrices, stockDoc],
+  );
 
-  // Parse ticker on mount to separate base ticker and exchange (for edit mode)
+  // Keep editable ticker fields in sync when a saved value is loaded into the form.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!ticker) return;
 
@@ -126,6 +136,7 @@ export default function StockGraphElement({
       setExchange('US');
     }
   }, [ticker]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handle click outside for exchange menu (for edit mode)
   useEffect(() => {
@@ -356,15 +367,7 @@ export default function StockGraphElement({
   }
 
   const handleTickerChange = (newTicker: string, newExchange: 'US' | 'NSE') => {
-    const cleanTicker = newTicker.toUpperCase().trim();
-
-    // Combine ticker with exchange suffix
-    let fullTicker = cleanTicker;
-    if (newExchange === 'NSE') {
-      fullTicker = `${cleanTicker}.NS`;
-    }
-
-    onChange(fullTicker);
+    onChange(normalizeTickerForExchange(newTicker, newExchange));
   };
 
   return (
