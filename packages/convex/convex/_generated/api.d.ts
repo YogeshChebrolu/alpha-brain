@@ -13,6 +13,7 @@ import type * as actions from "../actions.js";
 import type * as articles from "../articles.js";
 import type * as auth from "../auth.js";
 import type * as categories from "../categories.js";
+import type * as conversations from "../conversations.js";
 import type * as files from "../files.js";
 import type * as helpers from "../helpers.js";
 import type * as http from "../http.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   articles: typeof articles;
   auth: typeof auth;
   categories: typeof categories;
+  conversations: typeof conversations;
   files: typeof files;
   helpers: typeof helpers;
   http: typeof http;

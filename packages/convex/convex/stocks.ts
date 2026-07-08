@@ -7,6 +7,20 @@ const YF_HEADERS = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
 };
 
+const EXCHANGE_SUFFIXES = [".NS", ".BO"] as const;
+
+function normalizeStockTicker(value: string): string {
+  let ticker = value.toUpperCase().trim().replace(/\s+/g, "");
+
+  for (const suffix of EXCHANGE_SUFFIXES) {
+    while (ticker.endsWith(`${suffix}${suffix}`)) {
+      ticker = ticker.slice(0, -suffix.length);
+    }
+  }
+
+  return ticker;
+}
+
 // Yahoo Finance historical closes as a { "YYYY-MM-DD": price } map (no API key).
 async function fetchHistoricalPrices(
   ticker: string,
@@ -61,7 +75,7 @@ async function fetchCurrentPrice(
 export const sync = action({
   args: { ticker: v.string(), createdAt: v.optional(v.string()) },
   handler: async (ctx, args): Promise<{ ticker: string; price: number; dataPoints: number }> => {
-    const ticker = args.ticker.toUpperCase().trim();
+    const ticker = normalizeStockTicker(args.ticker);
     const today = new Date().toISOString().split("T")[0];
 
     const { price, changePct } = await fetchCurrentPrice(ticker);
@@ -101,9 +115,10 @@ export const sync = action({
 export const getByTicker = query({
   args: { ticker: v.string() },
   handler: async (ctx, { ticker }) => {
+    const normalizedTicker = normalizeStockTicker(ticker);
     return await ctx.db
       .query("daily_stock_prices")
-      .withIndex("by_ticker", (q) => q.eq("ticker", ticker.toUpperCase()))
+      .withIndex("by_ticker", (q) => q.eq("ticker", normalizedTicker))
       .unique();
   },
 });
@@ -116,7 +131,7 @@ export const upsert = mutation({
     historicalPrices: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
-    const ticker = args.ticker.toUpperCase();
+    const ticker = normalizeStockTicker(args.ticker);
     const existing = await ctx.db
       .query("daily_stock_prices")
       .withIndex("by_ticker", (q) => q.eq("ticker", ticker))

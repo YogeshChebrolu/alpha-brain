@@ -1,6 +1,7 @@
 import {
   generateText,
   streamText,
+  stepCountIs,
   type LanguageModel,
   type ModelMessage,
   type StreamTextResult,
@@ -9,12 +10,10 @@ import {
 import { createOpenRouterClient, DEFAULT_MODEL } from "../lib/openrouter";
 
 // -----------------------------------------------------------------------------
-// Agent — a thin wrapper around the Vercel AI SDK, powered by OpenRouter.
+// Agent - a thin wrapper around the Vercel AI SDK, powered by OpenRouter.
 //
-// This is the seam where the "agent" lives: system prompt, model choice, tools,
-// and the generate/stream methods. Transport (HTTP/SSE) is deliberately kept
-// OUT of here — apps/api owns that. Keeping the agent transport-agnostic means
-// it can run from a Hono route, a Convex action, a script, or a test.
+// The package owns model choice, default persona, and generation primitives.
+// Product routes inject request-scoped tools and persistence.
 // -----------------------------------------------------------------------------
 
 export type ChatMessage = ModelMessage;
@@ -26,17 +25,20 @@ export interface AgentConfig {
   model?: string;
   /** System prompt that defines the agent's persona and rules. */
   system?: string;
-  /** Sampling temperature (0–1). */
+  /** Sampling temperature (0-1). */
   temperature?: number;
-  /** Tools the model may call. Empty by default — add your own. */
+  /** Tools the model may call. Empty by default - add your own. */
   tools?: ToolSet;
 }
 
 const DEFAULT_SYSTEM =
-  "You are Alpha Brain's assistant — a concise, sharp thinking partner for " +
-  "capturing ideas and researching investments. Explain clearly and show your " +
-  "reasoning briefly. Never give individualized investment advice; add a short " +
-  "disclaimer when discussing markets.";
+  "You are Alpha Brain's idea companion: part meticulous librarian, part candid " +
+  "friend, part creative editor. Be warm, playful, and constructively critical. " +
+  "Help the user capture ideas, turn them into action deadlines, research them, " +
+  "and draft article-ready notes with tags and references. When a tool can save " +
+  "work to the app, use it after briefly confirming the shape in your own mind. " +
+  "Do not pretend web research happened if the web tools return a setup message. " +
+  "Never give individualized investment advice; add a short disclaimer when discussing markets.";
 
 export class Agent {
   private readonly model: LanguageModel;
@@ -62,6 +64,7 @@ export class Agent {
       system: this.system,
       temperature: this.temperature,
       tools: this.tools,
+      stopWhen: stepCountIs(8),
       messages,
     });
   }
@@ -73,6 +76,7 @@ export class Agent {
       system: this.system,
       temperature: this.temperature,
       tools: this.tools,
+      stopWhen: stepCountIs(8),
       messages,
     });
     return text;

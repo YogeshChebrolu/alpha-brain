@@ -11,8 +11,8 @@ import {
 // Vercel AI SDK (`ai`).
 // -----------------------------------------------------------------------------
 
-/** The free Llama 3.2 3B Instruct model — good default for local/dev. */
-export const DEFAULT_MODEL = "meta-llama/llama-3.2-3b-instruct:free";
+/** Try Cheap and Best Deepseek Flash V4 */
+export const DEFAULT_MODEL = "deepseek/deepseek-v4-flash";
 
 let cached: OpenRouterProvider | null = null;
 

@@ -2,6 +2,18 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireUser } from "./helpers";
 
+const articleReference = v.object({
+  title: v.string(),
+  url: v.optional(v.string()),
+  note: v.optional(v.string()),
+});
+
+const statusValidator = v.union(
+  v.literal("draft"),
+  v.literal("published"),
+  v.literal("archived"),
+);
+
 export const listMine = query({
   args: {},
   handler: async (ctx) => {
@@ -61,14 +73,16 @@ export const setPublic = mutation({
 
 export const create = mutation({
   args: {
+    sourceIdeaId: v.optional(v.id("ideas")),
+    linkedArticleIds: v.optional(v.array(v.id("articles"))),
     title: v.string(),
     slug: v.string(),
     content: v.string(),
     excerpt: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    references: v.optional(v.array(articleReference)),
     bannerImageUrl: v.optional(v.string()),
-    status: v.optional(
-      v.union(v.literal("draft"), v.literal("published"), v.literal("archived")),
-    ),
+    status: v.optional(statusValidator),
     readingTimeMinutes: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -85,13 +99,15 @@ export const create = mutation({
 export const update = mutation({
   args: {
     id: v.id("articles"),
+    sourceIdeaId: v.optional(v.id("ideas")),
+    linkedArticleIds: v.optional(v.array(v.id("articles"))),
     title: v.optional(v.string()),
     content: v.optional(v.string()),
     excerpt: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    references: v.optional(v.array(articleReference)),
     bannerImageUrl: v.optional(v.string()),
-    status: v.optional(
-      v.union(v.literal("draft"), v.literal("published"), v.literal("archived")),
-    ),
+    status: v.optional(statusValidator),
     readingTimeMinutes: v.optional(v.number()),
   },
   handler: async (ctx, { id, ...patch }) => {

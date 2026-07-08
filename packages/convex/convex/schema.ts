@@ -62,7 +62,7 @@ export default defineSchema({
     categoryId: v.optional(v.id("categories")),
     parentId: v.optional(v.id("ideas")), // self-reference for sub-ideas
     title: v.string(),
-    // TODO: tighten — dynamic answers keyed by form field id, shape varies per template.
+    // TODO: tighten - dynamic answers keyed by form field id, shape varies per template.
     contentJson: v.optional(v.any()),
     dueDate: v.optional(v.number()),
     archived: v.optional(v.boolean()),
@@ -92,10 +92,22 @@ export default defineSchema({
   // Long-form blog articles (TipTap JSON stored as string in `content`).
   articles: defineTable({
     userId: v.id("users"),
+    sourceIdeaId: v.optional(v.id("ideas")),
+    linkedArticleIds: v.optional(v.array(v.id("articles"))),
     title: v.string(),
     slug: v.string(),
     content: v.string(),
     excerpt: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    references: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          url: v.optional(v.string()),
+          note: v.optional(v.string()),
+        }),
+      ),
+    ),
     bannerImageUrl: v.optional(v.string()),
     bannerStoragePath: v.optional(v.string()),
     status: v.optional(
@@ -112,7 +124,27 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_slug", ["slug"])
+    .index("by_sourceIdea", ["sourceIdeaId"])
     .index("by_shareToken", ["shareToken"]),
+
+  // User-owned assistant threads. Hono streams replies, Convex persists them.
+  conversations: defineTable({
+    userId: v.id("users"),
+    title: v.string(),
+    lastMessageAt: v.number(),
+    archived: v.optional(v.boolean()),
+    profile: v.optional(v.any()),
+  }).index("by_user", ["userId"]),
+
+  messages: defineTable({
+    userId: v.id("users"),
+    conversationId: v.id("conversations"),
+    role: v.union(v.literal("user"), v.literal("assistant")),
+    content: v.string(),
+    toolEvents: v.optional(v.array(v.any())),
+  })
+    .index("by_user", ["userId"])
+    .index("by_conversation", ["conversationId"]),
 
   // Curated inspiration cards; may be system-seeded (userId absent) or user-owned.
   inspirations: defineTable({
@@ -137,7 +169,7 @@ export default defineSchema({
     ticker: v.string(),
     closePrice: v.optional(v.number()),
     changePct: v.optional(v.number()),
-    // TODO: tighten — date->price map, e.g. v.record(v.string(), v.number()).
+    // TODO: tighten - date->price map, e.g. v.record(v.string(), v.number()).
     historicalPrices: v.optional(v.any()),
     lastSyncedAt: v.optional(v.number()),
   }).index("by_ticker", ["ticker"]),

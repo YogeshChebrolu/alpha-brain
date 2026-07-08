@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Brain, Home, Lightbulb, Zap, FolderOpen, FileText, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Brain, Home, Lightbulb, Zap, FolderOpen, FileText, LogOut, Settings, ChevronDown, Bot } from 'lucide-react';
 import { useQuery } from 'convex/react';
 import { useAuthActions } from '@convex-dev/auth/react';
 import { api } from '@alpha-brain/convex';
@@ -83,6 +83,18 @@ export default function Header() {
                 </Link>
               );
             })}
+
+            <Link
+              href="/assistant"
+              className={`ml-1 hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors sm:flex ${
+                pathname === '/assistant'
+                  ? 'bg-neutral-900 text-white'
+                  : 'bg-accent text-white hover:opacity-90'
+              }`}
+            >
+              <Bot className="w-4 h-4" />
+              Try AI
+            </Link>
 
             {/* Profile dropdown */}
             <div className="relative ml-1 sm:ml-2" ref={menuRef}>

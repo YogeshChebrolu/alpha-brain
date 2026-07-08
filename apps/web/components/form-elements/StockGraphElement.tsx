@@ -8,6 +8,14 @@ import { api } from '@alpha-brain/convex';
 
 type HistoricalPoint = { date: string; close: number };
 
+const stripExchangeSuffixes = (value: string) =>
+  value.toUpperCase().trim().replace(/(\\.(NS|BO))+$/i, '');
+
+const normalizeTickerForExchange = (value: string, exchange: 'US' | 'NSE') => {
+  const cleanTicker = stripExchangeSuffixes(value);
+  return exchange === 'NSE' && cleanTicker ? ${cleanTicker}.NS : cleanTicker;
+};
+
 /**
  * Stock Graph Element
  * Visual chart showing stock performance since idea creation
@@ -111,7 +119,7 @@ export default function StockGraphElement({
     if (!ticker) return;
 
     if (ticker.endsWith('.NS') || ticker.endsWith('.BO')) {
-      setBaseTicker(ticker.replace('.NS', '').replace('.BO', ''));
+      setBaseTicker(stripExchangeSuffixes(ticker));
       setExchange('NSE');
     } else {
       setBaseTicker(ticker);
@@ -267,7 +275,7 @@ export default function StockGraphElement({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="text-lg font-semibold text-neutral-900">
-                    {ticker.replace('.NS', '').replace('.BO', '')}
+                    {stripExchangeSuffixes(ticker)}
                   </h3>
                   {(ticker.includes('.NS') || ticker.includes('.BO')) && (
                     <span className="px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-700 rounded">
