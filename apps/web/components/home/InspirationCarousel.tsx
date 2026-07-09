@@ -104,7 +104,7 @@ export default function InspirationCarousel({ inspirations }: InspirationCarouse
         </p>
         <Link
           href="/articles/new"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 transition-opacity"
+          className="inline-flex h-8 items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg hover:opacity-90 transition-opacity md:h-auto md:rounded-xl"
         >
           <Plus className="w-4 h-4" />
           Add your first article

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { Clock, ChevronRight } from 'lucide-react';
+import IdeaCardActions from './IdeaCardActions';
 
 type Idea = {
   _id: string;
@@ -68,6 +69,9 @@ export default function IdeasGrid({ ideas }: Props) {
               style={{ backgroundColor: color }}
             />
 
+            {/* Hover actions (edit / delete) */}
+            <IdeaCardActions ideaId={idea._id} ideaTitle={idea.title} />
+
             {/* Content */}
             <div className="p-5 pl-6">
               {/* Header */}
@@ -82,7 +86,7 @@ export default function IdeasGrid({ ideas }: Props) {
                   {idea.category?.name || 'General'}
                 </span>
                 {idea._creationTime && (
-                  <div className="flex items-center gap-1 text-xs text-neutral-400 flex-shrink-0">
+                  <div className="flex items-center gap-1 text-xs text-neutral-400 flex-shrink-0 group-hover:opacity-0 transition-opacity">
                     <Clock className="w-3 h-3" />
                     {formatDistanceToNow(new Date(idea._creationTime), { addSuffix: true })}
                   </div>

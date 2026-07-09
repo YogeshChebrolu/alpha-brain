@@ -6,11 +6,22 @@ import { api } from '@alpha-brain/convex';
 import { useRouter } from 'next/navigation';
 import { FormElementConfig, FormElementType } from '@/types/form-element.types';
 import ElementLibraryV2 from '@/components/template-builder/ElementLibraryV2';
+import ElementLibraryToolbar from '@/components/template-builder/ElementLibraryToolbar';
 import TemplateCanvasV2 from '@/components/template-builder/TemplateCanvasV2';
 import { createDefaultConfig } from '@/components/form-elements/registry';
 import { ArrowLeft, Save, Loader2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { DndContext, DragEndEvent, DragOverlay, useDroppable, DragStartEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  useDroppable,
+  DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { DEFAULT_IDEA_TEMPLATE } from '@/lib/constants/default-templates';
 
 // Refined color palette - muted and sophisticated for white backgrounds
@@ -123,10 +134,27 @@ export default function NewCategoryPage() {
   const createCategory = useMutation(api.categories.create);
   const router = useRouter();
 
+  // Press-hold to drag on touch (so a quick horizontal swipe still scrolls the
+  // mobile toolbar); small move threshold on pointer devices.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
+  );
+
+  const scrollToField = (id: string) => {
+    // Wait for the new card to render, then bring it into view above the toolbar.
+    setTimeout(() => {
+      document
+        .getElementById(`tpl-field-${id}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 60);
+  };
+
   const handleAddElement = (type: FormElementType) => {
     const newId = `field_${Date.now()}`;
     const defaultConfig = createDefaultConfig(type, newId);
     setTemplateElements([...templateElements, defaultConfig]);
+    scrollToField(newId);
   };
 
   const handleUpdateElement = (
@@ -283,7 +311,7 @@ export default function NewCategoryPage() {
 
           <button
             onClick={handleContinue}
-            className="w-full py-3 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors font-medium"
+            className="flex h-8 w-full items-center justify-center py-3 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors font-medium md:h-auto"
           >
             Continue
           </button>
@@ -293,23 +321,23 @@ export default function NewCategoryPage() {
   }
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="min-h-screen bg-neutral-50/30">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
-        <div className="relative max-w-[1800px] mx-auto px-6 py-8">
+        <div className="relative max-w-[1800px] mx-auto py-6 md:py-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4 mb-8 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3 md:gap-4">
               <Link
                 href="/"
-                className="p-2.5 hover:bg-neutral-100 rounded-lg transition-all border border-neutral-200 hover:border-neutral-300"
+                className="shrink-0 p-2.5 hover:bg-neutral-100 rounded-lg transition-all border border-neutral-200 hover:border-neutral-300"
               >
                 <ArrowLeft className="w-5 h-5 text-neutral-600" />
               </Link>
-              <div>
-                <h1 className="text-3xl font-semibold text-neutral-900 tracking-tight">
+              <div className="min-w-0">
+                <h1 className="text-2xl font-semibold text-neutral-900 tracking-tight md:text-3xl">
                   Create Category Template
                 </h1>
                 <p className="text-neutral-500 mt-1 text-sm">
@@ -322,7 +350,7 @@ export default function NewCategoryPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !categoryName || templateElements.length === 0}
-                className="flex items-center gap-2 px-6 py-2.5 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 font-medium"
+                className="flex h-8 w-full items-center justify-center gap-2 px-6 py-2.5 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 font-medium md:h-auto md:w-auto"
               >
                 {saving ? (
                   <>
@@ -346,7 +374,7 @@ export default function NewCategoryPage() {
           )}
 
           {/* Compact summary — color + name were chosen in the setup modal */}
-          <div className="mb-8 p-4 bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-2xl flex items-center justify-between">
+          <div className="mb-6 p-4 bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span
                 className="w-8 h-8 rounded-lg shadow-sm shrink-0"
@@ -370,17 +398,17 @@ export default function NewCategoryPage() {
           </div>
 
           {/* Main Content */}
-          <div className="flex gap-6 items-start">
-            {/* Sidebar - Elements Library */}
-            <div className="w-80 shrink-0">
-              <div className="sticky top-8 bg-neutral-50 border border-neutral-200 rounded-2xl p-6 h-[calc(100vh-200px)] overflow-hidden shadow-sm flex flex-col">
+          <div className="flex flex-col gap-6 pb-28 lg:flex-row lg:items-start lg:pb-0">
+            {/* Sidebar - Elements Library (desktop only; mobile uses the pinned bottom toolbar) */}
+            <div className="hidden shrink-0 lg:block lg:w-80">
+              <div className="lg:sticky lg:top-8 bg-neutral-50 border border-neutral-200 rounded-2xl p-4 md:p-6 h-105 lg:h-[calc(100vh-200px)] overflow-hidden shadow-sm flex flex-col">
                 <ElementLibraryV2 onAddElement={handleAddElement} />
               </div>
             </div>
 
             {/* Canvas - Full Width with Drop Zone */}
             <CanvasDropZone>
-              <div className="bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-2xl p-8">
+              <div className="bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-2xl p-4 md:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-lg font-semibold text-neutral-900">
@@ -411,7 +439,7 @@ export default function NewCategoryPage() {
           </div>
 
           {/* Helper Text */}
-          <div className="mt-6 text-center">
+          <div className="mt-6 hidden text-center lg:block">
             <p className="text-sm text-neutral-500">
               <Sparkles className="inline w-4 h-4 mr-1" />
               Tip: Drag elements from the library or click to add them to your template
@@ -419,6 +447,9 @@ export default function NewCategoryPage() {
           </div>
         </div>
       </div>
+
+      {/* Mobile: pinned element toolkit at the bottom */}
+      <ElementLibraryToolbar onAddElement={handleAddElement} />
 
       {/* Drag Overlay */}
       <DragOverlay>

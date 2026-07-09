@@ -133,35 +133,35 @@ export default function EditArticlePage() {
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-neutral-200">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-2 py-3">
           <Link
             href={`/articles/${article.slug}`}
-            className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-colors"
+            className="inline-flex shrink-0 items-center gap-2 text-neutral-600 hover:text-neutral-900 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm font-medium">Back to Article</span>
+            <span className="hidden text-sm font-medium sm:inline">Back to Article</span>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleDelete}
               disabled={deleting || saving}
-              className="inline-flex items-center gap-2 px-3 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
+              className="inline-flex h-8 items-center gap-2 px-3 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 md:h-auto"
             >
               <Trash2 className="w-4 h-4" />
             </button>
             <button
               onClick={() => handleSave('draft')}
               disabled={saving || deleting}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-200 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors disabled:opacity-50"
+              className="inline-flex h-8 items-center gap-2 px-3 py-2 border border-neutral-200 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors disabled:opacity-50 sm:px-4 md:h-auto"
             >
               <Save className="w-4 h-4" />
-              Save Draft
+              <span className="hidden sm:inline">Save Draft</span>
             </button>
             <button
               onClick={() => handleSave('published')}
               disabled={saving || deleting}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors disabled:opacity-50"
+              className="inline-flex h-8 items-center gap-2 px-3 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors disabled:opacity-50 sm:px-4 md:h-auto"
             >
               <Eye className="w-4 h-4" />
               {article.status === 'published' ? 'Update' : 'Publish'}
@@ -172,7 +172,7 @@ export default function EditArticlePage() {
 
       {/* Error */}
       {error && (
-        <div className="max-w-4xl mx-auto px-4 pt-4">
+        <div className="max-w-4xl mx-auto pt-4">
           <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
             {error}
           </div>
@@ -180,7 +180,7 @@ export default function EditArticlePage() {
       )}
 
       {/* Editor */}
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-4xl mx-auto py-8 space-y-6">
         {/* Banner Upload */}
         <ArticleBannerUpload
           value={bannerUrl}
@@ -200,7 +200,7 @@ export default function EditArticlePage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Article title..."
-          className="w-full text-4xl font-bold text-neutral-900 placeholder:text-neutral-300 bg-transparent border-none outline-none"
+          className="w-full text-2xl md:text-4xl font-bold text-neutral-900 placeholder:text-neutral-300 bg-transparent border-none outline-none"
         />
 
         {/* Content Editor */}

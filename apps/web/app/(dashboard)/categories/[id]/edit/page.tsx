@@ -4,10 +4,21 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery } from 'convex/react';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useDroppable } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  useDroppable,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { ArrowLeft, Loader2, Save, Sparkles } from 'lucide-react';
 import { api, type Id } from '@alpha-brain/convex';
 import ElementLibraryV2 from '@/components/template-builder/ElementLibraryV2';
+import ElementLibraryToolbar from '@/components/template-builder/ElementLibraryToolbar';
 import TemplateCanvasV2 from '@/components/template-builder/TemplateCanvasV2';
 import { createDefaultConfig } from '@/components/form-elements/registry';
 import type { FormElementConfig, FormElementType } from '@/types/form-element.types';
@@ -62,9 +73,23 @@ export default function EditCategoryPage() {
   }, [category, hydratedId]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
+  );
+
+  const scrollToField = (id: string) => {
+    setTimeout(() => {
+      document
+        .getElementById(`tpl-field-${id}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 60);
+  };
+
   const handleAddElement = (type: FormElementType) => {
     const newId = `field_${Date.now()}`;
     setTemplateElements((elements) => [...elements, createDefaultConfig(type, newId)]);
+    scrollToField(newId);
   };
 
   const handleUpdateElement = (index: number, updates: Partial<FormElementConfig>) => {
@@ -153,18 +178,18 @@ export default function EditCategoryPage() {
   }
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="min-h-screen bg-neutral-50/30">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-[1800px] px-6 py-8">
-          <div className="mb-8 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/categories" className="rounded-lg border border-neutral-200 p-2.5 transition-all hover:border-neutral-300 hover:bg-neutral-100">
+        <div className="relative mx-auto max-w-[1800px] py-6 md:py-8">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3 md:gap-4">
+              <Link href="/categories" className="shrink-0 rounded-lg border border-neutral-200 p-2.5 transition-all hover:border-neutral-300 hover:bg-neutral-100">
                 <ArrowLeft className="h-5 w-5 text-neutral-600" />
               </Link>
-              <div>
-                <h1 className="text-3xl font-semibold tracking-tight text-neutral-900">Edit Category Template</h1>
+              <div className="min-w-0">
+                <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 md:text-3xl">Edit Category Template</h1>
                 <p className="mt-1 text-sm text-neutral-500">Update the form users fill when creating ideas in this category</p>
               </div>
             </div>
@@ -172,7 +197,7 @@ export default function EditCategoryPage() {
             <button
               onClick={handleSave}
               disabled={saving || !categoryName || templateElements.length === 0}
-              className="flex items-center gap-2 rounded-lg bg-neutral-900 px-6 py-2.5 font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-50"
+              className="flex h-8 w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-6 py-2.5 font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-50 md:h-auto md:w-auto"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               {saving ? 'Saving...' : 'Save Changes'}
@@ -185,7 +210,7 @@ export default function EditCategoryPage() {
             </div>
           )}
 
-          <div className="mb-8 rounded-2xl border border-neutral-200 bg-white/80 p-4 backdrop-blur-sm">
+          <div className="mb-6 rounded-2xl border border-neutral-200 bg-white/80 p-4 backdrop-blur-sm">
             <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
               <div>
                 <label className="mb-2 block text-sm font-medium text-neutral-700">Category name</label>
@@ -216,15 +241,16 @@ export default function EditCategoryPage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-6">
-            <div className="w-80 shrink-0">
-              <div className="sticky top-24 flex h-[calc(100vh-220px)] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm">
+          <div className="flex flex-col gap-6 pb-28 lg:flex-row lg:items-start lg:pb-0">
+            {/* Elements Library (desktop only; mobile uses the pinned bottom toolbar) */}
+            <div className="hidden shrink-0 lg:block lg:w-80">
+              <div className="flex h-105 flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 p-4 shadow-sm md:p-6 lg:sticky lg:top-24 lg:h-[calc(100vh-220px)]">
                 <ElementLibraryV2 onAddElement={handleAddElement} />
               </div>
             </div>
 
             <CanvasDropZone>
-              <div className="rounded-2xl border border-neutral-200 bg-white/80 p-8 backdrop-blur-sm">
+              <div className="rounded-2xl border border-neutral-200 bg-white/80 p-4 backdrop-blur-sm md:p-8">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-semibold text-neutral-900">Template Structure</h2>
@@ -244,7 +270,7 @@ export default function EditCategoryPage() {
             </CanvasDropZone>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 hidden text-center lg:block">
             <p className="text-sm text-neutral-500">
               <Sparkles className="mr-1 inline h-4 w-4" />
               Drag elements from the library or click to add them to your template
@@ -252,6 +278,9 @@ export default function EditCategoryPage() {
           </div>
         </div>
       </div>
+
+      {/* Mobile: pinned element toolkit at the bottom */}
+      <ElementLibraryToolbar onAddElement={handleAddElement} />
 
       <DragOverlay>
         {activeDragType ? (

@@ -12,7 +12,7 @@ export default function TextElement({
         <label className="block text-sm font-medium mb-1 text-text">
           {config.label}
         </label>
-        <p className="text-lg text-text">{value || 'Not provided'}</p>
+        <p className="text-base md:text-lg text-text">{value || 'Not provided'}</p>
       </div>
     );
   }

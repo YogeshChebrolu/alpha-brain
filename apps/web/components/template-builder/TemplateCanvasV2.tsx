@@ -78,8 +78,9 @@ function SortableElement({
   return (
     <div
       ref={setNodeRef}
+      id={`tpl-field-${element.id}`}
       style={style}
-      className="group border border-neutral-200 rounded-xl p-4 bg-white hover:border-neutral-300 hover:shadow-md transition-all"
+      className="group relative border border-neutral-200 rounded-xl p-4 bg-white hover:border-neutral-300 hover:shadow-md transition-all scroll-mt-24 scroll-mb-28"
     >
       <div className="flex items-start gap-3">
         {/* Drag handle */}
@@ -100,7 +101,7 @@ function SortableElement({
         )}
 
         {/* Content */}
-        <div className="flex-1 space-y-3">
+        <div className={`flex-1 space-y-3 ${isEditing ? 'pr-20' : ''}`}>
           {isEditing ? (
             <>
               <input
@@ -152,7 +153,7 @@ function SortableElement({
             </>
           ) : (
             <>
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap pr-20">
                 <span className="font-medium text-neutral-900">{element.label}</span>
                 <span className="text-xs text-neutral-500 uppercase bg-neutral-100 px-2 py-0.5 rounded">
                   {element.type.replace('_', ' ')}
@@ -184,7 +185,7 @@ function SortableElement({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1">
+        <div className="absolute right-2 top-2 flex items-center gap-1">
           {isEditing ? (
             <>
               <button
@@ -206,14 +207,14 @@ function SortableElement({
             <>
               <button
                 onClick={() => setIsEditing(true)}
-                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                 title="Edit"
               >
                 <Edit2 className="w-4 h-4 text-neutral-600" />
               </button>
               <button
                 onClick={onRemove}
-                className="p-2 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                className="p-2 hover:bg-red-50 rounded-lg transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                 title="Remove"
               >
                 <Trash2 className="w-4 h-4 text-red-600" />

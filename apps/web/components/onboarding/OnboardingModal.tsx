@@ -81,7 +81,7 @@ export default function OnboardingModal() {
           </button>
           <button
             onClick={start}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors"
+            className="inline-flex h-8 items-center gap-2 px-5 py-2.5 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors md:h-auto"
           >
             Create your first category
             <ArrowRight className="w-4 h-4" />

@@ -91,9 +91,9 @@ export default function ActionSidebar({ actions }: Props) {
   const inProgressCount = actions.filter(a => a.status === 'in_progress').length;
 
   return (
-    <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
+    <div className="flex flex-col bg-white rounded-2xl border border-neutral-200 overflow-hidden lg:max-h-[calc(100vh-8rem)]">
       {/* Header */}
-      <div className="p-5 border-b border-neutral-100 bg-gradient-to-br from-neutral-50 to-white">
+      <div className="shrink-0 p-5 border-b border-neutral-100 bg-gradient-to-br from-neutral-50 to-white">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-neutral-900 flex items-center gap-2">
             <Target className="w-5 h-5 text-neutral-700" />
@@ -119,8 +119,8 @@ export default function ActionSidebar({ actions }: Props) {
         )}
       </div>
 
-      {/* Actions list */}
-      <div className="p-4">
+      {/* Actions list — the only scrollable region on the home page */}
+      <div className="flex-1 overflow-y-auto p-4">
         {actions.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
@@ -131,7 +131,7 @@ export default function ActionSidebar({ actions }: Props) {
           </div>
         ) : (
           <div className="space-y-3">
-            {actions.slice(0, 5).map((action) => {
+            {actions.map((action) => {
               const statusConfig = getStatusConfig(action.status ?? null);
               const dueConfig = getDueConfig(action.dueTime);
               const StatusIcon = statusConfig.icon;
@@ -192,7 +192,7 @@ export default function ActionSidebar({ actions }: Props) {
       {/* Footer */}
       <Link
         href="/actions"
-        className="flex items-center justify-center gap-2 p-4 text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 border-t border-neutral-100 transition-colors group"
+        className="shrink-0 flex items-center justify-center gap-2 p-4 text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 border-t border-neutral-100 transition-colors group"
       >
         View all actions
         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

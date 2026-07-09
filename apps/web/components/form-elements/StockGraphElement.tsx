@@ -171,8 +171,6 @@ export default function StockGraphElement({
       chartInstanceRef.current = null;
     }
 
-    let resizeHandler: (() => void) | null = null;
-
     // Dynamically import lightweight-charts to avoid SSR issues
     const initChart = async () => {
       try {
@@ -184,14 +182,18 @@ export default function StockGraphElement({
           return;
         }
 
-        // Create chart
+        // Create chart. autoSize lets the chart observe its container and keep
+        // the canvas matched to the (responsive) box — measuring clientWidth
+        // once at init drew the canvas wider than the box on mobile, clipping
+        // the plot and floating the price axis out into dead space.
         const chart = createChart(chartContainerRef.current, {
           layout: {
             background: { type: ColorType.Solid, color: 'transparent' },
             textColor: '#525252',
+            fontSize: 11,
+            attributionLogo: false,
           },
-          width: chartContainerRef.current.clientWidth,
-          height: 160,
+          autoSize: true,
           grid: {
             vertLines: { color: '#f5f5f5' },
             horzLines: { color: '#f5f5f5' },
@@ -231,17 +233,6 @@ export default function StockGraphElement({
 
         // Store chart instance
         chartInstanceRef.current = chart;
-
-        // Handle resize
-        resizeHandler = () => {
-          if (chartContainerRef.current && chartInstanceRef.current) {
-            chartInstanceRef.current.applyOptions({
-              width: chartContainerRef.current.clientWidth,
-            });
-          }
-        };
-
-        window.addEventListener('resize', resizeHandler);
       } catch (error) {
         console.error('Chart initialization error:', error);
       }
@@ -250,9 +241,6 @@ export default function StockGraphElement({
     initChart();
 
     return () => {
-      if (resizeHandler) {
-        window.removeEventListener('resize', resizeHandler);
-      }
       if (chartInstanceRef.current) {
         chartInstanceRef.current.remove();
         chartInstanceRef.current = null;
@@ -280,7 +268,7 @@ export default function StockGraphElement({
             </p>
           </div>
         ) : stockData ? (
-          <div className="p-6 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-xl border border-neutral-200">
+          <div className="p-4 md:p-6 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-xl border border-neutral-200">
             {/* Header with price and growth */}
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -294,7 +282,7 @@ export default function StockGraphElement({
                     </span>
                   )}
                 </div>
-                <p className="text-3xl font-bold text-neutral-900">
+                <p className="text-2xl font-bold text-neutral-900 md:text-3xl">
                   {ticker.includes('.NS') || ticker.includes('.BO') ? '₹' : '$'}
                   {stockData.closePrice?.toFixed(2)}
                 </p>
@@ -328,7 +316,7 @@ export default function StockGraphElement({
             {stockData.historicalPrices && stockData.historicalPrices.length > 0 ? (
               <div
                 ref={chartContainerRef}
-                className="w-full rounded-lg overflow-hidden bg-white border border-neutral-200"
+                className="h-40 w-full rounded-lg overflow-hidden bg-white border border-neutral-200"
               />
             ) : (
               <div className="w-full rounded-lg bg-white border border-neutral-200 p-8 flex flex-col items-center justify-center text-center">

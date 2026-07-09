@@ -212,7 +212,7 @@ export default function LinkElement({
         <button
           type="button"
           onClick={handleAddLink}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors text-sm font-medium"
+          className="inline-flex h-8 items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors text-sm font-medium md:h-auto"
         >
           <Plus className="w-4 h-4" />
           Add Link
