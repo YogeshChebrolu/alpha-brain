@@ -24,9 +24,9 @@ export const list = query({
 export const get = query({
   args: { id: v.id("categories") },
   handler: async (ctx, { id }) => {
-    await requireUser(ctx);
+    const userId = await requireUser(ctx);
     const category = await ctx.db.get(id);
-    if (!category) return null;
+    if (!category || category.userId !== userId || category.archived) return null;
     return {
       ...category,
       template: category.templateId ? await ctx.db.get(category.templateId) : null,
@@ -61,6 +61,51 @@ export const create = mutation({
   },
 });
 
+
+export const update = mutation({
+  args: {
+    id: v.id("categories"),
+    name: v.string(),
+    color: v.string(),
+    gradient: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    formStructure: v.array(v.any()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await requireUser(ctx);
+    const category = await ctx.db.get(args.id);
+    if (!category || category.userId !== userId || category.archived) {
+      throw new Error("Category not found");
+    }
+
+    let templateId = category.templateId;
+    if (templateId) {
+      const template = await ctx.db.get(templateId);
+      if (!template || template.userId !== userId) {
+        throw new Error("Template not found");
+      }
+      await ctx.db.patch(templateId, {
+        name: args.name,
+        formStructure: args.formStructure,
+      });
+    } else {
+      templateId = await ctx.db.insert("templates", {
+        userId,
+        name: args.name,
+        formStructure: args.formStructure,
+      });
+    }
+
+    await ctx.db.patch(args.id, {
+      name: args.name,
+      color: args.color,
+      gradient: args.gradient,
+      icon: args.icon,
+      templateId,
+    });
+    return args.id;
+  },
+});
 export const remove = mutation({
   args: { id: v.id("categories") },
   handler: async (ctx, { id }) => {

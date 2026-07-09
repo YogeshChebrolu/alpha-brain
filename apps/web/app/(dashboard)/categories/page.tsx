@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Plus, FolderPlus } from 'lucide-react';
 import { useQuery } from 'convex/react';
 import { api } from '@alpha-brain/convex';
 import CategoryDeleteButton from '@/components/categories/CategoryDeleteButton';
 
 export default function CategoriesPage() {
+  const router = useRouter();
   const categories = useQuery(api.categories.list);
 
   return (
@@ -34,7 +36,15 @@ export default function CategoriesPage() {
             return (
               <div
                 key={category._id}
-                className="group relative rounded-2xl transition-all duration-300 hover:-translate-y-1"
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push(`/categories/${category._id}/edit`)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    router.push(`/categories/${category._id}/edit`);
+                  }
+                }}
+                className="group relative rounded-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2"
                 style={{
                   background: `linear-gradient(135deg, ${color}08 0%, ${color}15 100%)`,
                   boxShadow: `0 4px 20px -4px ${color}20`,
@@ -51,26 +61,28 @@ export default function CategoriesPage() {
 
                 {/* Content */}
                 <div className="p-6 pl-8">
-                  {/* Category info — click to view this category's ideas */}
-                  <Link href={`/ideas?category=${category._id}`} className="block mb-4 group/info">
-                    <h3 className="font-bold text-neutral-900 text-xl mb-1 group-hover/info:underline">
+                  {/* Category info - click the card to edit its form/template */}
+                  <div className="block mb-4">
+                    <h3 className="font-bold text-neutral-900 text-xl mb-1 group-hover:underline">
                       {category.name}
                     </h3>
                     <p className="text-sm text-neutral-500">
                       {category.template?.formStructure?.length ?? 0} fields
                     </p>
-                  </Link>
+                  </div>
 
                   {/* Actions */}
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/ideas?category=${category._id}`}
+                      onClick={(event) => event.stopPropagation()}
                       className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white/70 transition-all hover:bg-white"
                     >
                       View Ideas
                     </Link>
                     <Link
                       href={`/ideas/new?category=${category._id}`}
+                      onClick={(event) => event.stopPropagation()}
                       className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:opacity-90"
                       style={{
                         backgroundColor: color,

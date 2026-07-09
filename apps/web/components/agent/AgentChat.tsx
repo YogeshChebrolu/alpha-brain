@@ -7,16 +7,24 @@ import { api, type Id } from "@alpha-brain/convex";
 import {
   Bot,
   Loader2,
+  Menu,
   MessageSquarePlus,
   Send,
   Sparkles,
   Trash2,
   Wrench,
+  X,
 } from "lucide-react";
 import { streamAgentChat, type AgentToolEvent } from "@/lib/agent-client";
 import { Streamdown } from "streamdown";
 
 type Phase = "idle" | "streaming" | "settling";
+
+type Conversation = {
+  _id: Id<"conversations">;
+  title: string;
+  lastMessageAt: number;
+};
 
 type Message = {
   _id: string;
@@ -33,13 +41,14 @@ const SUGGESTIONS = [
 
 export default function AgentChat() {
   const token = useAuthToken();
-  const conversations = useQuery(api.conversations.list);
+  const conversations = useQuery(api.conversations.list) as Conversation[] | undefined;
   const createConversation = useMutation(api.conversations.create);
   const addMessage = useMutation(api.conversations.addMessage);
   const removeConversation = useMutation(api.conversations.remove);
 
   const [selectedConversationId, setSelectedConversationId] = useState<Id<"conversations"> | null>(null);
   const activeConversationId = selectedConversationId ?? conversations?.[0]?._id ?? null;
+  const activeConversation = conversations?.find((conversation) => conversation._id === activeConversationId);
   const messages = useQuery(
     api.conversations.listMessages,
     activeConversationId ? { conversationId: activeConversationId } : "skip",
@@ -51,9 +60,17 @@ export default function AgentChat() {
   const [statusText, setStatusText] = useState("");
   const [liveTools, setLiveTools] = useState<AgentToolEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const stickToBottomRef = useRef(true);
+
+  useEffect(() => {
+    const syncHistoryState = () => setHistoryOpen(window.innerWidth >= 1024);
+    syncHistoryState();
+    window.addEventListener("resize", syncHistoryState);
+    return () => window.removeEventListener("resize", syncHistoryState);
+  }, []);
 
   useEffect(() => {
     if (!stickToBottomRef.current) return;
@@ -73,11 +90,21 @@ export default function AgentChat() {
     }
   }, [messages, phase]);
 
+  function closeHistoryOnSmallScreens() {
+    if (window.innerWidth < 1024) setHistoryOpen(false);
+  }
+
+  function selectConversation(conversationId: Id<"conversations">) {
+    setSelectedConversationId(conversationId);
+    closeHistoryOnSmallScreens();
+  }
+
   async function startNewChat() {
     const id = await createConversation({});
     setSelectedConversationId(id);
     setInput("");
     setError(null);
+    closeHistoryOnSmallScreens();
   }
 
   async function submitPrompt(raw: string) {
@@ -164,61 +191,120 @@ export default function AgentChat() {
   const streaming = phase === "streaming";
 
   return (
-    <div className="grid h-[calc(100vh-9rem)] min-h-0 overflow-hidden rounded-lg border border-neutral-200 bg-white lg:grid-cols-[280px_minmax(0,1fr)]">
-      <aside className="flex min-h-0 flex-col border-b border-neutral-200 bg-neutral-50 lg:border-b-0 lg:border-r">
+    <div className="relative flex h-[calc(100dvh-4.5rem)] min-h-[34rem] overflow-hidden border-y border-neutral-200 bg-white sm:rounded-lg sm:border lg:h-[calc(100vh-9rem)]">
+      {historyOpen ? (
+        <button
+          type="button"
+          className="absolute inset-0 z-20 bg-black/20 lg:hidden"
+          onClick={() => setHistoryOpen(false)}
+          aria-label="Close conversation history"
+        />
+      ) : null}
+
+      <aside
+        className={`absolute inset-y-0 left-0 z-30 flex w-[min(20rem,calc(100vw-2rem))] min-h-0 flex-col border-r border-neutral-200 bg-neutral-50 shadow-xl transition-transform duration-200 lg:relative lg:z-auto lg:w-72 lg:shadow-none ${
+          historyOpen ? "translate-x-0" : "-translate-x-full lg:hidden"
+        }`}
+      >
         <div className="flex items-center justify-between border-b border-neutral-200 p-3">
-          <div>
-            <p className="text-sm font-semibold text-neutral-900">Conversations</p>
-            <p className="text-xs text-neutral-500">Tied to your account</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-neutral-900">Conversations</p>
+            <p className="truncate text-xs text-neutral-500">Tied to your account</p>
           </div>
-          <button
-            type="button"
-            onClick={() => void startNewChat()}
-            className="grid size-9 place-items-center rounded-lg bg-neutral-900 text-white transition-colors hover:bg-neutral-800"
-            aria-label="New chat"
-            title="New chat"
-          >
-            <MessageSquarePlus className="size-4" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => void startNewChat()}
+              className="grid size-9 shrink-0 place-items-center rounded-lg bg-neutral-900 text-white transition-colors hover:bg-neutral-800"
+              aria-label="New chat"
+              title="New chat"
+            >
+              <MessageSquarePlus className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setHistoryOpen(false)}
+              className="grid size-9 shrink-0 place-items-center rounded-lg text-neutral-500 transition-colors hover:bg-white lg:hidden"
+              aria-label="Close conversation history"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
         </div>
+
         <div className="min-h-0 flex-1 overflow-y-auto p-2">
-          {(conversations ?? []).map((conversation) => {
-            const active = conversation._id === activeConversationId;
-            return (
-              <div key={conversation._id} className="group flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => setSelectedConversationId(conversation._id)}
-                  className={`min-w-0 flex-1 rounded-lg px-3 py-2 text-left transition-colors ${
-                    active ? "bg-white text-neutral-950 shadow-sm" : "text-neutral-600 hover:bg-white"
-                  }`}
-                >
-                  <p className="truncate text-sm font-medium">{conversation.title}</p>
-                  <p className="text-xs text-neutral-400">
-                    {new Date(conversation.lastMessageAt).toLocaleDateString()}
-                  </p>
-                </button>
-                {active ? (
+          {(conversations ?? []).length === 0 ? (
+            <p className="px-3 py-6 text-sm text-neutral-500">No conversations yet.</p>
+          ) : (
+            (conversations ?? []).map((conversation) => {
+              const active = conversation._id === activeConversationId;
+              return (
+                <div key={conversation._id} className="group flex items-center gap-1">
                   <button
                     type="button"
-                    onClick={() => {
-                      void removeConversation({ conversationId: conversation._id });
-                      setSelectedConversationId(null);
-                    }}
-                    className="grid size-8 place-items-center rounded-lg text-neutral-400 opacity-0 transition hover:bg-white hover:text-red-600 group-hover:opacity-100"
-                    aria-label="Delete conversation"
-                    title="Delete conversation"
+                    onClick={() => selectConversation(conversation._id)}
+                    className={`min-w-0 flex-1 rounded-lg px-3 py-2 text-left transition-colors ${
+                      active ? "bg-white text-neutral-950 shadow-sm" : "text-neutral-600 hover:bg-white"
+                    }`}
                   >
-                    <Trash2 className="size-4" />
+                    <p className="truncate text-sm font-medium">{conversation.title}</p>
+                    <p className="truncate text-xs text-neutral-400">
+                      {new Date(conversation.lastMessageAt).toLocaleDateString()}
+                    </p>
                   </button>
-                ) : null}
-              </div>
-            );
-          })}
+                  {active ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void removeConversation({ conversationId: conversation._id });
+                        setSelectedConversationId(null);
+                      }}
+                      className="grid size-8 shrink-0 place-items-center rounded-lg text-neutral-400 opacity-100 transition hover:bg-white hover:text-red-600 lg:opacity-0 lg:group-hover:opacity-100"
+                      aria-label="Delete conversation"
+                      title="Delete conversation"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  ) : null}
+                </div>
+              );
+            })
+          )}
         </div>
       </aside>
 
-      <section className="flex min-h-0 min-w-0 flex-col">
+      <section className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-neutral-200 bg-white px-3 sm:px-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setHistoryOpen((open) => !open)}
+              className="grid size-9 shrink-0 place-items-center rounded-lg border border-neutral-200 text-neutral-700 transition-colors hover:bg-neutral-50"
+              aria-label={historyOpen ? "Hide conversation history" : "Show conversation history"}
+              title={historyOpen ? "Hide history" : "Show history"}
+            >
+              <Menu className="size-4" />
+            </button>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-neutral-900">
+                {activeConversation?.title ?? "Alpha Brain Assistant"}
+              </p>
+              <p className="hidden truncate text-xs text-neutral-500 sm:block">
+                Chat, capture, critique, and build from your ideas
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => void startNewChat()}
+            className="inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-neutral-900 px-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 sm:px-3"
+          >
+            <MessageSquarePlus className="size-4" />
+            <span className="hidden sm:inline">New chat</span>
+          </button>
+        </div>
+
         <div
           ref={scrollRef}
           onScroll={() => {
@@ -227,26 +313,26 @@ export default function AgentChat() {
             stickToBottomRef.current =
               el.scrollHeight - el.scrollTop - el.clientHeight < 80;
           }}
-          className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6"
+          className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6"
         >
-          <div className="mx-auto flex max-w-3xl flex-col gap-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-5 sm:gap-6">
             {empty ? (
-              <div className="flex min-h-[48vh] flex-col items-center justify-center text-center">
+              <div className="flex min-h-[52vh] flex-col items-center justify-center text-center">
                 <div className="grid size-12 place-items-center rounded-2xl bg-neutral-900 text-white">
                   <Sparkles className="size-5" />
                 </div>
-                <h1 className="mt-4 text-3xl font-bold text-neutral-950">Alpha Brain Assistant</h1>
+                <h1 className="mt-4 text-2xl font-bold text-neutral-950 sm:text-3xl">Alpha Brain Assistant</h1>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-neutral-500">
                   Capture categories, turn ideas into dated actions, and draft research-backed articles. It can be friendly; it will also call out flimsy thinking.
                 </p>
-                <div className="mt-5 flex flex-wrap justify-center gap-2">
+                <div className="mt-5 hidden flex-wrap justify-center gap-2 sm:flex">
                   {SUGGESTIONS.map((suggestion) => (
                     <button
                       key={suggestion}
                       type="button"
                       onClick={() => void submitPrompt(suggestion)}
                       disabled={!token}
-                      className="rounded-full border border-neutral-200 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:border-neutral-900 disabled:opacity-50"
+                      className="max-w-full truncate whitespace-nowrap rounded-full border border-neutral-200 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:border-neutral-900 disabled:opacity-50"
                     >
                       {suggestion}
                     </button>
@@ -274,7 +360,7 @@ export default function AgentChat() {
           </div>
         </div>
 
-        <div className="border-t border-neutral-200 bg-white p-3 sm:p-4">
+        <div className="shrink-0 border-t border-neutral-200 bg-white p-3 sm:p-4">
           <div className="mx-auto max-w-3xl">
             {error ? (
               <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
@@ -287,7 +373,7 @@ export default function AgentChat() {
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Ask it to create a category, save an idea, critique a plan, or draft an article..."
                 rows={1}
-                className="max-h-36 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400"
+                className="scrollbar-none max-h-36 min-h-10 flex-1 resize-none overflow-y-auto bg-transparent px-2 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400"
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && !event.shiftKey) {
                     event.preventDefault();
@@ -323,7 +409,7 @@ function Turn({
   const assistant = message.role === "assistant";
   return (
     <div className={`flex ${assistant ? "justify-start" : "justify-end"}`}>
-      <div className={`max-w-[88%] ${assistant ? "space-y-2" : ""}`}>
+      <div className={`max-w-[92%] sm:max-w-[88%] ${assistant ? "space-y-2" : ""}`}>
         {assistant ? (
           <div className="flex items-center gap-2 text-xs font-medium text-neutral-500">
             <Bot className="size-4 text-neutral-900" /> Assistant
@@ -331,9 +417,7 @@ function Turn({
         ) : null}
         <div
           className={`rounded-2xl px-4 py-3 text-sm leading-6 ${
-            assistant
-              ? "bg-white text-neutral-900"
-              : "bg-neutral-900 text-white"
+            assistant ? "bg-white text-neutral-900" : "bg-neutral-900 text-white"
           }`}
         >
           {pending ? (

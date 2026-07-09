@@ -1,8 +1,9 @@
 'use client';
 
+import type { MouseEvent } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useMutation } from 'convex/react';
-import { api } from '@alpha-brain/convex';
+import { api, type Id } from '@alpha-brain/convex';
 
 interface CategoryDeleteButtonProps {
   categoryId: string;
@@ -15,13 +16,14 @@ export default function CategoryDeleteButton({
 }: CategoryDeleteButtonProps) {
   const remove = useMutation(api.categories.remove);
 
-  const handleDelete = async () => {
+  const handleDelete = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     if (!confirm(`Delete category "${categoryName}"? Ideas in this category will not be deleted.`)) {
       return;
     }
 
     try {
-      await remove({ id: categoryId as any });
+      await remove({ id: categoryId as Id<'categories'> });
     } catch (error) {
       console.error('Failed to delete category:', error);
       alert('Failed to delete category');

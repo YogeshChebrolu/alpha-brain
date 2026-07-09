@@ -153,3 +153,17 @@ body {
   background: #737373;
 }
 
+
+/* Keep CTA labels intact; icon-only controls are unaffected. */
+button,
+a.inline-flex {
+  white-space: nowrap;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
