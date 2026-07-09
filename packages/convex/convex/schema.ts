@@ -163,6 +163,70 @@ export default defineSchema({
     .index("by_active", ["isActive"])
     .index("by_article", ["articleId"]),
 
+
+  telegramBotConnections: defineTable({
+    userId: v.id("users"),
+    botId: v.string(),
+    botUsername: v.string(),
+    botFirstName: v.optional(v.string()),
+    encryptedToken: v.string(),
+    tokenHint: v.string(),
+    webhookSecret: v.string(),
+    connectNonce: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("active"),
+      v.literal("broken"),
+      v.literal("disconnected"),
+    ),
+    webhookUrl: v.optional(v.string()),
+    lastError: v.optional(v.string()),
+    connectedAt: v.number(),
+    disconnectedAt: v.optional(v.number()),
+    lastWebhookUpdateAt: v.optional(v.number()),
+  })
+    .index("by_user", ["userId"])
+    .index("by_botId", ["botId"]),
+
+  telegramChatLinks: defineTable({
+    userId: v.id("users"),
+    botConnectionId: v.id("telegramBotConnections"),
+    telegramUserId: v.string(),
+    telegramChatId: v.string(),
+    username: v.optional(v.string()),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    activeConversationId: v.optional(v.id("conversations")),
+    lastMessageAt: v.optional(v.number()),
+    pendingDecisionId: v.optional(v.id("telegramConversationDecisions")),
+    linkedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_connection_chat", ["botConnectionId", "telegramChatId"]),
+
+  telegramConversationDecisions: defineTable({
+    userId: v.id("users"),
+    botConnectionId: v.id("telegramBotConnections"),
+    telegramChatId: v.string(),
+    previousConversationId: v.id("conversations"),
+    pendingMessageText: v.string(),
+    shortId: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("resolved"),
+      v.literal("expired"),
+    ),
+    expiresAt: v.number(),
+    resolvedConversationId: v.optional(v.id("conversations")),
+  })
+    .index("by_connection_short", ["botConnectionId", "shortId"])
+    .index("by_connection_chat", ["botConnectionId", "telegramChatId"]),
+
+  telegramWebhookUpdates: defineTable({
+    botConnectionId: v.id("telegramBotConnections"),
+    updateId: v.string(),
+    receivedAt: v.number(),
+  }).index("by_connection_update", ["botConnectionId", "updateId"]),
   // Global stock-price cache keyed by ticker (not user-scoped).
   // historicalPrices is a { "YYYY-MM-DD": number } map.
   daily_stock_prices: defineTable({

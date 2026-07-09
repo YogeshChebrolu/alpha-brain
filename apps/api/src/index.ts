@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { meta } from "./routes/meta";
 import { agent } from "./routes/agent";
+import { telegram } from "./routes/telegram";
 
 // -----------------------------------------------------------------------------
 // alpha-brain — Hono API (runs on Bun)
@@ -29,8 +30,8 @@ app.use("*", cors({ origin: allowedOrigins, credentials: true }));
 
 // --- Routes ------------------------------------------------------------------
 app.route("/", meta); //           GET  /  ·  GET /health
-app.route("/api/agent", agent); //  POST /api/agent/chat  (streaming AI)
-// Future: app.route("/api/telegram", telegram)  ← webhook lives here
+app.route("/api/agent", agent); //     POST /api/agent/chat  (streaming AI)
+app.route("/api/telegram", telegram); // POST /api/telegram/*     (Telegram bots)
 
 // --- Server ------------------------------------------------------------------
 const port = Number(process.env.PORT ?? 8787);
