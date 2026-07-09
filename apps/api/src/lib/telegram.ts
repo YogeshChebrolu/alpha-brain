@@ -48,10 +48,17 @@ export async function deleteWebhook(token: string) {
   return await telegramRequest<boolean>(token, "deleteWebhook", { drop_pending_updates: true });
 }
 
-export async function sendMessage(token: string, chatId: string, text: string, replyMarkup?: unknown) {
+export async function sendMessage(
+  token: string,
+  chatId: string,
+  text: string,
+  replyMarkup?: unknown,
+  parseMode?: "HTML",
+) {
   return await telegramRequest<unknown>(token, "sendMessage", {
     chat_id: chatId,
     text,
+    ...(parseMode ? { parse_mode: parseMode } : {}),
     ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
   });
 }
@@ -63,6 +70,54 @@ export async function answerCallbackQuery(token: string, callbackQueryId: string
   });
 }
 
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeHtmlAttribute(value: string) {
+  return escapeHtml(value).replace(/'/g, "&#39;");
+}
+
+function safeTelegramHref(value: string) {
+  if (/^(https?:\/\/|tg:\/\/)/i.test(value)) return escapeHtmlAttribute(value);
+  return null;
+}
+
+function formatMarkdownTextSegment(segment: string) {
+  const lines = escapeHtml(segment).split("\n");
+  const formattedLines = lines.map((line) => {
+    const heading = line.match(/^(#{1,6})\s+(.+)$/);
+    return heading ? `<b>${heading[2]}</b>` : line;
+  });
+
+  return formattedLines
+    .join("\n")
+    .replace(/`([^`\n]+)`/g, "<code>$1</code>")
+    .replace(/\[([^\]\n]+)\]\(([^)\s]+)\)/g, (_match, label: string, href: string) => {
+      const safeHref = safeTelegramHref(href);
+      return safeHref ? `<a href="${safeHref}">${label}</a>` : label;
+    })
+    .replace(/\*\*([^*\n]+)\*\*/g, "<b>$1</b>")
+    .replace(/__([^_\n]+)__/g, "<b>$1</b>")
+    .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, "<i>$1</i>")
+    .replace(/(?<!_)_([^_\n]+)_(?!_)/g, "<i>$1</i>");
+}
+
+export function markdownToTelegramHtml(markdown: string) {
+  const parts = markdown.replace(/\r\n/g, "\n").split(/```/g);
+  return parts
+    .map((part, index) => {
+      if (index % 2 === 0) return formatMarkdownTextSegment(part);
+      const code = part.replace(/^\w+\n/, "");
+      return `<pre><code>${escapeHtml(code.trim())}</code></pre>`;
+    })
+    .join("");
+}
 export function randomTelegramSecret() {
   return randomBytes(32).toString("base64url");
 }

@@ -10,6 +10,7 @@ import {
   deleteWebhook,
   encryptBotToken,
   getMe,
+  markdownToTelegramHtml,
   randomTelegramSecret,
   sendMessage,
   setWebhook,
@@ -96,7 +97,7 @@ function asChatMessages(messages: Array<{ role: "user" | "assistant"; content: s
 
 async function sendLongReply(botToken: string, chatId: string, text: string) {
   for (const chunk of chunkTelegramText(text)) {
-    await sendMessage(botToken, chatId, chunk);
+    await sendMessage(botToken, chatId, markdownToTelegramHtml(chunk), undefined, "HTML");
   }
 }
 
