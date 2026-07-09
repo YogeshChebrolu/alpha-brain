@@ -13,7 +13,7 @@ export default function DashboardLayout({
         <DemoBanner />
         <Header />
       </div>
-      <main className="flex-1 container mx-auto px-8 py-8">
+      <main className="flex-1 container mx-auto px-4 py-6 md:px-8 md:py-8">
         {children}
       </main>
     </div>

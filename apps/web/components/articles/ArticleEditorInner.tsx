@@ -46,6 +46,7 @@ export default function ArticleEditorInner({
     <BlockNoteView
       editor={editor}
       editable={editable}
+      theme="dark"
       onChange={() => onChange?.(editor.document)}
       className="min-h-[300px] py-2"
     />

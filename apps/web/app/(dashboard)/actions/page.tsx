@@ -81,10 +81,10 @@ function ActionCard({ action }: { action: Action }) {
             <Link
               href={`/ideas/${action.idea._id}`}
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1 text-sm text-neutral-600 hover:text-neutral-900 mt-2 group-hover:underline"
+              className="flex items-center gap-1 text-sm text-neutral-600 hover:text-neutral-900 mt-2 group-hover:underline min-w-0 max-w-full"
             >
-              <span>{action.idea.title}</span>
-              <ExternalLink className="w-3 h-3" />
+              <span className="truncate">{action.idea.title}</span>
+              <ExternalLink className="w-3 h-3 shrink-0" />
             </Link>
           )}
         </div>
@@ -190,7 +190,7 @@ export default function ActionsPage() {
     return (
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text">Actions</h1>
+          <h1 className="text-2xl font-bold text-text md:text-3xl">Actions</h1>
           <p className="text-gray-500 mt-1">Track all your actions across ideas</p>
         </div>
         <p className="text-sm text-neutral-400">Loading actions…</p>
@@ -207,7 +207,7 @@ export default function ActionsPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-text">Actions</h1>
+        <h1 className="text-2xl font-bold text-text md:text-3xl">Actions</h1>
         <p className="text-gray-500 mt-1">Track all your actions across ideas</p>
       </div>
 

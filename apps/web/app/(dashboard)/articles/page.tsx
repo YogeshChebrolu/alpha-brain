@@ -21,7 +21,7 @@ export default function ArticlesPage() {
         </div>
         <Link
           href="/articles/new"
-          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 sm:gap-2 sm:px-4 sm:py-2.5 sm:text-base"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 sm:h-auto sm:gap-2 sm:px-4 sm:py-2.5 sm:text-base"
         >
           <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           New Article
@@ -42,7 +42,7 @@ export default function ArticlesPage() {
           </p>
           <Link
             href="/articles/new"
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 sm:gap-2 sm:px-4 sm:py-2.5 sm:text-base"
+            className="inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 sm:h-auto sm:gap-2 sm:px-4 sm:py-2.5 sm:text-base"
           >
             <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Write Your First Article

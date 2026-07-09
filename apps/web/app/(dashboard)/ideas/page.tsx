@@ -32,7 +32,7 @@ export default function IdeasPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900">
+          <h1 className="text-2xl font-bold text-neutral-900 md:text-3xl">
             {activeCategoryName ? activeCategoryName : 'Your Ideas'}
           </h1>
           <div className="flex items-center gap-3 mt-1">
@@ -52,7 +52,7 @@ export default function IdeasPage() {
         </div>
         <Link
           href="/ideas/new"
-          className="flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors font-medium"
+          className="flex h-8 items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors font-medium md:h-auto"
         >
           <Plus className="w-5 h-5" />
           New Idea
@@ -71,7 +71,7 @@ export default function IdeasPage() {
           <p className="text-neutral-500 mb-6">Create your first idea to get started</p>
           <Link
             href="/ideas/new"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors"
+            className="inline-flex h-8 items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors md:h-auto md:rounded-xl"
           >
             <Plus className="w-4 h-4" />
             Create Idea

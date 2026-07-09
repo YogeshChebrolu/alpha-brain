@@ -75,7 +75,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/80 backdrop-blur-sm">
-      <div className="container mx-auto px-3 sm:px-4">
+      <div className="container mx-auto px-4 md:px-8">
         <div className="flex h-14 items-center justify-between sm:h-16">
           <Link href="/" className="flex shrink-0 items-center gap-2">
             <Brain className="h-5 w-5 text-neutral-900 sm:h-6 sm:w-6" />
@@ -99,7 +99,7 @@ export default function Header() {
 
             <Link
               href="/assistant"
-              className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-semibold transition-colors sm:gap-2 sm:px-3 ${
+              className={`flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-semibold transition-colors sm:gap-2 sm:px-3 md:h-auto ${
                 pathname === '/assistant'
                   ? 'bg-neutral-900 text-white'
                   : 'bg-accent text-white hover:opacity-90'

@@ -127,7 +127,7 @@ export default function DynamicFormRenderer({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-accent text-white py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
+            className="flex h-8 w-full items-center justify-center bg-accent text-white py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 font-medium md:h-auto"
           >
             {isSubmitting ? 'Saving...' : 'Save Idea'}
           </button>

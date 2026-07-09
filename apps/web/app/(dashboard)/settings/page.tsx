@@ -201,7 +201,7 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
+        <h1 className="text-2xl font-bold text-neutral-900 md:text-3xl">Settings</h1>
         <p className="text-neutral-500 mt-1">
           Manage your workspace
         </p>
@@ -241,7 +241,7 @@ export default function SettingsPage() {
                 type="button"
                 onClick={handleConnectTelegram}
                 disabled={telegramConnecting || !botToken.trim()}
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className="inline-flex h-8 items-center justify-center gap-2 px-5 py-3 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium md:h-auto md:rounded-xl"
               >
                 {telegramConnecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
                 Connect Bot
@@ -304,7 +304,7 @@ export default function SettingsPage() {
                       type="button"
                       onClick={() => handleDisconnectTelegram(connection._id)}
                       disabled={telegramDisconnectingId === connection._id}
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-neutral-200 text-neutral-700 rounded-lg hover:bg-neutral-50 disabled:opacity-50 transition-colors text-sm font-medium"
+                      className="inline-flex h-8 items-center justify-center gap-2 px-4 py-2 border border-neutral-200 text-neutral-700 rounded-lg hover:bg-neutral-50 disabled:opacity-50 transition-colors text-sm font-medium md:h-auto"
                     >
                       {telegramDisconnectingId === connection._id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Unplug className="w-4 h-4" />}
                       Disconnect
@@ -337,7 +337,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSyncAllStocks}
               disabled={syncing}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+              className="h-8 w-full flex items-center justify-center gap-2 px-6 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium md:h-auto md:rounded-xl"
             >
               {syncing ? (
                 <>

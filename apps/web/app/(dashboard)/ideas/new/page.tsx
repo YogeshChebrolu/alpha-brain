@@ -149,7 +149,7 @@ function NewIdeaForm() {
             <ArrowLeft className="w-5 h-5 text-neutral-600" />
           </button>
           <div>
-            <h1 className="text-3xl font-semibold text-neutral-900 tracking-tight">
+            <h1 className="text-2xl font-semibold text-neutral-900 tracking-tight md:text-3xl">
               {step === 'category' ? 'Choose a category' : selectedCategory?.name}
             </h1>
             <p className="text-neutral-500 mt-1 text-sm">
@@ -183,7 +183,7 @@ function NewIdeaForm() {
                   </p>
                   <Link
                     href="/categories/new"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors font-medium"
+                    className="inline-flex h-8 items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors font-medium md:h-auto md:rounded-xl"
                   >
                     <Sparkles className="w-4 h-4" />
                     Create your first category

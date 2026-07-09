@@ -25,7 +25,7 @@ export default function HomePage() {
       {/* Welcome Section — title left, quick actions as small buttons on the right */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-text mb-2">Your Insight Lab</h1>
+          <h1 className="text-3xl font-bold text-text mb-2 md:text-4xl">Your Insight Lab</h1>
           <p className="text-gray-500">
             Capture ideas, track investments, and transform thoughts into action.
           </p>
@@ -33,14 +33,14 @@ export default function HomePage() {
         <div className="flex items-center gap-3 shrink-0">
           <Link
             href="/ideas/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
+            className="inline-flex h-8 items-center gap-2 px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity md:h-auto"
           >
             <Plus className="w-4 h-4" />
             New Idea
           </Link>
           <Link
             href="/categories/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-border text-text text-sm font-medium rounded-lg hover:border-accent transition-colors"
+            className="inline-flex h-8 items-center gap-2 px-4 py-2 bg-white border border-border text-text text-sm font-medium rounded-lg hover:border-accent transition-colors md:h-auto"
           >
             <FolderPlus className="w-4 h-4 text-accent" />
             New Category
@@ -48,7 +48,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:items-start">
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-8">
           {/* Inspiration Carousel */}
@@ -59,17 +59,17 @@ export default function HomePage() {
             <h2 className="text-xl font-bold text-text mb-4">Your Stats</h2>
             <div className="grid grid-cols-3 gap-4">
               <div className="p-4 bg-white border border-border rounded-lg text-center">
-                <p className="text-3xl font-bold text-accent">{ideasCount || 0}</p>
+                <p className="text-2xl font-bold text-accent md:text-3xl">{ideasCount || 0}</p>
                 <p className="text-sm text-gray-500">Total Ideas</p>
               </div>
               <div className="p-4 bg-white border border-border rounded-lg text-center">
-                <p className="text-3xl font-bold text-accent">
+                <p className="text-2xl font-bold text-accent md:text-3xl">
                   {pendingActions}
                 </p>
                 <p className="text-sm text-gray-500">Pending Actions</p>
               </div>
               <div className="p-4 bg-white border border-border rounded-lg text-center">
-                <p className="text-3xl font-bold text-accent">
+                <p className="text-2xl font-bold text-accent md:text-3xl">
                   {categories?.length || 0}
                 </p>
                 <p className="text-sm text-gray-500">Categories</p>
@@ -78,8 +78,9 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
+        {/* Sidebar — pinned so only Current Focus scrolls, not the page */}
+        <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-24 lg:self-start">
+
           <GettingStartedChecklist />
           <ActionSidebar actions={actions || []} />
         </div>

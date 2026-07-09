@@ -15,14 +15,14 @@ export default function CategoriesPage() {
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900">Categories</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 md:text-3xl">Categories</h1>
           <p className="text-neutral-500 mt-1">
             Manage your idea templates and categories
           </p>
         </div>
         <Link
           href="/categories/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
+          className="inline-flex h-8 items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors md:h-auto"
         >
           <Plus className="w-4 h-4" />
           New Category
@@ -76,14 +76,14 @@ export default function CategoriesPage() {
                     <Link
                       href={`/ideas?category=${category._id}`}
                       onClick={(event) => event.stopPropagation()}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white/70 transition-all hover:bg-white"
+                      className="inline-flex h-8 items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white/70 transition-all hover:bg-white md:h-auto"
                     >
                       View Ideas
                     </Link>
                     <Link
                       href={`/ideas/new?category=${category._id}`}
                       onClick={(event) => event.stopPropagation()}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:opacity-90"
+                      className="inline-flex h-8 items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:opacity-90 md:h-auto"
                       style={{
                         backgroundColor: color,
                         color: 'white'
@@ -118,7 +118,7 @@ export default function CategoriesPage() {
           </p>
           <Link
             href="/categories/new"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors"
+            className="inline-flex h-8 items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors md:h-auto md:rounded-xl"
           >
             <Plus className="w-4 h-4" />
             Create Category

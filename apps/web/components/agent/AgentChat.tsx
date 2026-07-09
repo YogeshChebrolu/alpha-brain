@@ -191,7 +191,7 @@ export default function AgentChat() {
   const streaming = phase === "streaming";
 
   return (
-    <div className="relative flex h-[calc(100dvh-4.5rem)] min-h-[34rem] overflow-hidden border-y border-neutral-200 bg-white sm:rounded-lg sm:border lg:h-[calc(100vh-9rem)]">
+    <div className="relative -mx-4 -my-6 flex h-[calc(100dvh-4.5rem)] min-h-136 overflow-hidden border-y border-neutral-200 bg-white sm:mx-0 sm:my-0 sm:rounded-lg sm:border lg:h-[calc(100vh-9rem)]">
       {historyOpen ? (
         <button
           type="button"
@@ -239,11 +239,11 @@ export default function AgentChat() {
             (conversations ?? []).map((conversation) => {
               const active = conversation._id === activeConversationId;
               return (
-                <div key={conversation._id} className="group flex items-center gap-1">
+                <div key={conversation._id} className="group relative">
                   <button
                     type="button"
                     onClick={() => selectConversation(conversation._id)}
-                    className={`min-w-0 flex-1 rounded-lg px-3 py-2 text-left transition-colors ${
+                    className={`w-full rounded-lg px-3 py-2 pr-10 text-left transition-colors ${
                       active ? "bg-white text-neutral-950 shadow-sm" : "text-neutral-600 hover:bg-white"
                     }`}
                   >
@@ -259,7 +259,7 @@ export default function AgentChat() {
                         void removeConversation({ conversationId: conversation._id });
                         setSelectedConversationId(null);
                       }}
-                      className="grid size-8 shrink-0 place-items-center rounded-lg text-neutral-400 opacity-100 transition hover:bg-white hover:text-red-600 lg:opacity-0 lg:group-hover:opacity-100"
+                      className="absolute right-1 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-neutral-400 transition hover:bg-neutral-100 hover:text-red-600"
                       aria-label="Delete conversation"
                       title="Delete conversation"
                     >
@@ -371,7 +371,7 @@ export default function AgentChat() {
               <textarea
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                placeholder="Ask it to create a category, save an idea, critique a plan, or draft an article..."
+                placeholder="Ask to create, save, or draft…"
                 rows={1}
                 className="scrollbar-none max-h-36 min-h-10 flex-1 resize-none overflow-y-auto bg-transparent px-2 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400"
                 onKeyDown={(event) => {

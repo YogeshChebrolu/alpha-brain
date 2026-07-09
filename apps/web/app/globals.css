@@ -167,3 +167,24 @@ a.inline-flex {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* Article editor (BlockNote) tweaks on mobile. */
+@media (max-width: 767px) {
+  /* Hide only the add-block "+" button; keep the drag handle. The data-test
+     lives on the icon, so hide the whole button around it (otherwise an empty
+     dark box is left). Blocks can still be inserted with the "/" slash menu. */
+  button:has([data-test="dragHandleAdd"]),
+  [data-test="dragHandleAdd"] {
+    display: none !important;
+  }
+
+  /* BlockNote defaults to 54px inline padding on both sides and no vertical
+     padding, so on a phone the text is cramped horizontally yet hugs the top.
+     Give the writing area balanced spacing: room on the left for the drag
+     handle, trimmed right, and comfortable top/bottom. */
+  .bn-editor {
+    padding-inline-start: 2.25rem !important;
+    padding-inline-end: 1.25rem !important;
+    padding-block: 1.25rem !important;
+  }
+}
