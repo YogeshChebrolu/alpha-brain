@@ -7,12 +7,14 @@ import Link from 'next/link';
 import { Brain, Mail, Lock, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getSafeRedirect } from '@/lib/helpers/redirect';
+import GoogleIcon from '@/components/auth/GoogleIcon';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const router = useRouter();
   const { signIn } = useAuthActions();
 
@@ -36,12 +38,16 @@ export default function LoginPage() {
 
   const handleGoogle = async () => {
     setError(null);
+    setGoogleLoading(true);
     try {
       await signIn('google', { redirectTo: getSafeRedirect() });
     } catch {
       setError('Could not start Google sign-in. Please try again.');
+      setGoogleLoading(false);
     }
   };
+
+  const authLoading = loading || googleLoading;
 
   const handleDemo = async () => {
     setError(null);
@@ -125,7 +131,7 @@ export default function LoginPage() {
 
         <motion.button
           type="submit"
-          disabled={loading}
+          disabled={authLoading}
           whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
           whileTap={{ scale: 0.98 }}
           className="w-full bg-neutral-900 text-white py-2.5 text-sm rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
@@ -151,15 +157,25 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={handleGoogle}
-          disabled={loading}
+          disabled={authLoading}
           className="w-full flex items-center justify-center gap-2 border border-neutral-200 py-2.5 text-sm rounded-lg hover:bg-neutral-50 transition-colors disabled:opacity-50 font-medium text-neutral-700"
         >
-          Continue with Google
+          {googleLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Connecting...
+            </>
+          ) : (
+            <>
+              <GoogleIcon />
+              Continue with Google
+            </>
+          )}
         </button>
         <button
           type="button"
           onClick={handleDemo}
-          disabled={loading}
+          disabled={authLoading}
           className="w-full py-2.5 text-sm rounded-lg bg-neutral-100 hover:bg-neutral-200 transition-colors disabled:opacity-50 font-medium text-neutral-700"
         >
           Try the demo (no sign-up)
