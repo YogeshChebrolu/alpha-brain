@@ -11,6 +11,7 @@ import {
   FolderOpen,
   Home,
   Lightbulb,
+  Loader2,
   LogOut,
   Menu,
   Settings,
@@ -39,6 +40,7 @@ export default function Header() {
 
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -61,9 +63,18 @@ export default function Header() {
   }, [accountMenuOpen, mobileMenuOpen]);
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push('/login');
-    router.refresh();
+    if (signingOut) return;
+    setSigningOut(true);
+    setAccountMenuOpen(false);
+    setMobileMenuOpen(false);
+    try {
+      await signOut();
+      router.replace('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('[signout] signOut failed:', error);
+      setSigningOut(false);
+    }
   };
 
   const initial = (name || email || '?').charAt(0).toUpperCase();
@@ -167,10 +178,11 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={handleSignOut}
+                      disabled={signingOut}
                       className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-neutral-700 hover:bg-neutral-50"
                     >
-                      <LogOut className="h-4 w-4" />
-                      Sign Out
+                      {signingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+                      {signingOut ? 'Signing out...' : 'Sign Out'}
                     </button>
                   </div>
                 </div>
@@ -205,10 +217,11 @@ export default function Header() {
                   </Link>
                   <button
                     onClick={handleSignOut}
+                    disabled={signingOut}
                     className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-neutral-700 transition-colors hover:bg-neutral-50"
                   >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
+                    {signingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+                    {signingOut ? 'Signing out...' : 'Sign Out'}
                   </button>
                 </div>
               )}
